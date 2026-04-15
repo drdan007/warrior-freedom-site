@@ -1,0 +1,2306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Warrior Freedom AI — Members Platform</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+<style>
+:root {
+  --black:   #080A10;
+  --navy:    #0C0F1E;
+  --surface: #111428;
+  --card:    #161930;
+  --card2:   #1C2040;
+  --red:     #C0392B;
+  --red2:    #E74C3C;
+  --gold:    #C9A84C;
+  --gold2:   #E2C16A;
+  --green:   #27AE60;
+  --green2:  #2ECC71;
+  --blue:    #2980B9;
+  --text:    #F5F2ED;
+  --muted:   rgba(240,237,232,0.65);
+  --border:  rgba(240,237,232,0.09);
+  --sidebar: 248px;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; font-family: 'DM Sans', sans-serif; font-size: 15px; line-height: 1.65; background: var(--black); color: var(--text); overflow-x: hidden; }
+
+::-webkit-scrollbar { width: 3px; }
+::-webkit-scrollbar-track { background: var(--black); }
+::-webkit-scrollbar-thumb { background: var(--red); border-radius: 2px; }
+
+/* ══════════════════════════════════
+   LOGIN
+══════════════════════════════════ */
+#login-screen {
+  min-height: 100vh;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--black);
+  position: relative; overflow: hidden;
+}
+
+.login-grid {
+  position: absolute; inset: 0;
+  background-image:
+    linear-gradient(rgba(192,57,43,0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(192,57,43,0.05) 1px, transparent 1px);
+  background-size: 56px 56px;
+  pointer-events: none;
+}
+
+.login-glow {
+  position: absolute; inset: 0;
+  background: radial-gradient(ellipse 60% 50% at 50% 100%, rgba(192,57,43,0.12), transparent 70%);
+  pointer-events: none;
+}
+
+.login-box {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  padding: 52px 48px;
+  width: 100%; max-width: 440px;
+  position: relative; z-index: 1;
+  animation: loginIn 0.5s ease both;
+}
+
+.login-box::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; height: 2px;
+  background: linear-gradient(90deg, var(--red), var(--gold), transparent);
+}
+
+@keyframes loginIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: none; }
+}
+
+.login-logo {
+  display: flex; align-items: center; gap: 12px;
+  margin-bottom: 6px;
+}
+
+.logo-hex {
+  width: 38px; height: 38px;
+  background: var(--red);
+  clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.logo-hex span {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 16px; color: #fff; letter-spacing: 0.04em;
+}
+
+.login-brand {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 24px; letter-spacing: 0.1em; line-height: 1;
+  color: var(--text);
+}
+.login-brand span { color: var(--gold); }
+
+.login-sub {
+  font-size: 11px; font-weight: 600;
+  letter-spacing: 0.2em; text-transform: uppercase;
+  color: var(--muted); margin-bottom: 40px;
+  padding-left: 50px;
+}
+
+.lbl {
+  display: block; font-size: 10px; font-weight: 700;
+  letter-spacing: 0.18em; text-transform: uppercase;
+  color: var(--muted); margin-bottom: 8px;
+}
+
+.inp {
+  width: 100%;
+  background: var(--card);
+  border: 1px solid var(--border);
+  color: var(--text);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 14px; padding: 13px 16px;
+  outline: none; margin-bottom: 20px;
+  transition: border-color 0.2s;
+}
+.inp:focus { border-color: var(--red); }
+.inp::placeholder { color: rgba(240,237,232,0.15); }
+
+.login-btn {
+  width: 100%;
+  background: var(--red); color: #fff;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 18px; letter-spacing: 0.14em;
+  padding: 14px; border: none; cursor: pointer;
+  margin-top: 4px;
+  transition: background 0.2s, transform 0.15s;
+}
+.login-btn:hover { background: var(--red2); transform: translateY(-1px); }
+
+.login-foot {
+  text-align: center; margin-top: 24px;
+  font-size: 12px; color: var(--muted);
+}
+.login-foot a { color: var(--gold); text-decoration: none; }
+
+.login-demo {
+  text-align: center; margin-top: 20px;
+  font-size: 10px; color: rgba(240,237,232,0.18);
+  border-top: 1px solid var(--border); padding-top: 16px;
+  letter-spacing: 0.06em;
+}
+
+/* ══════════════════════════════════
+   APP SHELL
+══════════════════════════════════ */
+#app { display: none; height: 100vh; flex-direction: row; overflow: hidden; }
+
+/* SIDEBAR */
+.sidebar {
+  width: var(--sidebar);
+  min-width: var(--sidebar);
+  background: var(--surface);
+  border-right: 1px solid var(--border);
+  display: flex; flex-direction: column;
+  height: 100vh; overflow-y: auto;
+  position: relative; z-index: 20;
+}
+
+.sb-logo {
+  padding: 22px 20px 20px;
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; gap: 10px;
+  flex-shrink: 0;
+}
+
+.sb-brand {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 16px; letter-spacing: 0.1em; line-height: 1.1;
+}
+.sb-brand span { color: var(--gold); display: block; }
+.sb-brand small {
+  font-size: 9px; letter-spacing: 0.22em;
+  color: var(--muted); display: block; margin-top: 1px;
+}
+
+.sb-section {
+  padding: 18px 20px 6px;
+  font-size: 8px; font-weight: 700;
+  letter-spacing: 0.26em; text-transform: uppercase;
+  color: rgba(240,237,232,0.2);
+}
+
+.nav-item {
+  display: flex; align-items: center; gap: 11px;
+  padding: 10px 20px;
+  font-size: 13px; font-weight: 500;
+  color: rgba(240,237,232,0.65); cursor: pointer;
+  border-left: 2px solid transparent;
+  transition: all 0.18s; user-select: none;
+}
+.nav-item:hover { color: var(--text); background: rgba(255,255,255,0.03); }
+.nav-item.active {
+  color: var(--text);
+  background: rgba(192,57,43,0.1);
+  border-left-color: var(--red);
+}
+
+.nav-icon { font-size: 15px; width: 18px; text-align: center; flex-shrink: 0; }
+
+.nav-badge {
+  margin-left: auto; font-size: 9px; font-weight: 800;
+  padding: 2px 7px; border-radius: 20px;
+  background: var(--red); color: #fff;
+}
+.nav-badge.live {
+  background: var(--green);
+  animation: pulse-glow 2s infinite;
+}
+.nav-badge.gold { background: var(--gold); color: #080A10; }
+
+@keyframes pulse-glow {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+.sb-footer {
+  margin-top: auto;
+  padding: 16px 20px;
+  border-top: 1px solid var(--border);
+  display: flex; align-items: center; gap: 10px;
+}
+
+.av {
+  width: 32px; height: 32px; border-radius: 50%;
+  background: linear-gradient(135deg, var(--red), #7A1010);
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 14px; color: #fff; flex-shrink: 0;
+}
+
+.sb-user-name { font-size: 13px; font-weight: 600; line-height: 1.2; }
+.sb-user-rank {
+  font-size: 9px; font-weight: 700;
+  letter-spacing: 0.12em; text-transform: uppercase;
+  color: var(--gold);
+}
+
+.logout-btn {
+  margin-left: auto; background: none; border: none;
+  color: var(--muted); cursor: pointer; font-size: 15px;
+  transition: color 0.2s;
+}
+.logout-btn:hover { color: var(--red); }
+
+/* MAIN */
+.main { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+
+/* TOPBAR */
+.topbar {
+  height: 56px; min-height: 56px;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center;
+  padding: 0 28px; gap: 16px;
+  flex-shrink: 0;
+}
+
+.topbar-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 22px; letter-spacing: 0.08em; color: var(--text);
+}
+
+.topbar-right { margin-left: auto; display: flex; align-items: center; gap: 16px; }
+
+.ticker {
+  display: flex; gap: 20px; font-size: 11px;
+  font-weight: 600; letter-spacing: 0.06em;
+}
+.tick { display: flex; align-items: center; gap: 5px; }
+.tick-sym { color: var(--muted); }
+.tick-up { color: var(--green2); }
+.tick-dn { color: var(--red2); }
+
+.icon-btn {
+  width: 32px; height: 32px;
+  background: var(--card); border: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px; cursor: pointer; color: var(--muted);
+  transition: border-color 0.2s, color 0.2s; position: relative;
+}
+.icon-btn:hover { border-color: var(--gold); color: var(--gold); }
+.icon-btn .dot {
+  position: absolute; top: 5px; right: 5px;
+  width: 5px; height: 5px;
+  background: var(--red); border-radius: 50%;
+}
+
+/* CONTENT */
+.content { flex: 1; overflow-y: auto; padding: 28px; }
+
+/* PAGE */
+.page { display: none; animation: pgIn 0.28s ease; }
+.page.active { display: block; }
+@keyframes pgIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: none; }
+}
+
+.pg-header {
+  display: flex; align-items: flex-end; justify-content: space-between;
+  flex-wrap: wrap; gap: 14px; margin-bottom: 24px;
+}
+
+.pg-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 38px; letter-spacing: 0.05em; line-height: 1;
+}
+.pg-title span { color: var(--gold); }
+.pg-title em { color: var(--red); font-style: normal; }
+
+.pg-sub { font-size: 13px; color: var(--muted); margin-top: 5px; }
+
+/* GRIDS */
+.g3 { display: grid; grid-template-columns: repeat(3,1fr); gap: 14px; }
+.g2 { display: grid; grid-template-columns: repeat(2,1fr); gap: 14px; }
+.g4 { display: grid; grid-template-columns: repeat(4,1fr); gap: 14px; }
+
+/* CARD */
+.card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  padding: 22px;
+  transition: border-color 0.2s;
+}
+.card:hover { border-color: rgba(192,57,43,0.2); }
+.card.red-top { border-top: 2px solid var(--red); }
+.card.gold-top { border-top: 2px solid var(--gold); }
+.card.green-top { border-top: 2px solid var(--green); }
+
+/* SECTION LABEL */
+.sec-lbl {
+  font-size: 11px; font-weight: 700;
+  letter-spacing: 0.22em; text-transform: uppercase;
+  color: rgba(240,237,232,0.55); margin: 24px 0 12px;
+  display: flex; align-items: center; gap: 10px;
+}
+.sec-lbl::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+/* ══════════════════════════════════
+   DASHBOARD PAGE
+══════════════════════════════════ */
+.stat-val {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 52px; letter-spacing: 0.02em;
+  line-height: 1; color: var(--gold);
+}
+.stat-val.red { color: var(--red2); }
+.stat-val.green { color: var(--green2); }
+.stat-val.sm { font-size: 38px; }
+
+.stat-lbl {
+  font-size: 11px; font-weight: 700;
+  letter-spacing: 0.16em; text-transform: uppercase;
+  color: rgba(240,237,232,0.65); margin-top: 8px;
+}
+.stat-delta {
+  font-size: 13px; font-weight: 600; margin-top: 4px;
+}
+.delta-up { color: var(--green2); }
+.delta-dn { color: var(--red2); }
+
+.feed { display: flex; flex-direction: column; gap: 0; }
+.feed-item {
+  display: flex; gap: 12px; align-items: flex-start;
+  padding: 12px 0; border-bottom: 1px solid var(--border);
+}
+.feed-item:last-child { border-bottom: none; }
+.fd { width: 7px; height: 7px; border-radius: 50%; margin-top: 5px; flex-shrink: 0; }
+.fd-red { background: var(--red); }
+.fd-gold { background: var(--gold); }
+.fd-green { background: var(--green); }
+.fd-blue { background: var(--blue); }
+.feed-text { font-size: 14px; line-height: 1.65; }
+.feed-time { font-size: 12px; color: rgba(240,237,232,0.55); margin-top: 2px; }
+
+/* ══════════════════════════════════
+   NEWSLETTER PAGE
+══════════════════════════════════ */
+.nl-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--red);
+  padding: 24px 28px;
+  margin-bottom: 10px;
+  transition: border-color 0.2s, transform 0.2s;
+  cursor: pointer;
+}
+.nl-card:hover { border-color: rgba(192,57,43,0.5); transform: translateX(4px); }
+
+.nl-date {
+  font-size: 10px; font-weight: 700;
+  letter-spacing: 0.18em; text-transform: uppercase;
+  color: var(--red2); margin-bottom: 8px;
+  display: flex; align-items: center; gap: 10px;
+}
+
+.nl-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 22px; letter-spacing: 0.05em;
+  color: var(--text); margin-bottom: 8px;
+}
+
+.nl-preview { font-size: 14px; line-height: 1.75; color: rgba(240,237,232,0.72); }
+
+.nl-tags { display: flex; gap: 8px; margin-top: 14px; flex-wrap: wrap; }
+.nl-tag {
+  font-size: 9px; font-weight: 700;
+  letter-spacing: 0.14em; text-transform: uppercase;
+  padding: 3px 10px;
+}
+.nl-tag.red { background: rgba(192,57,43,0.12); color: var(--red2); }
+.nl-tag.gold { background: rgba(201,168,76,0.12); color: var(--gold); }
+.nl-tag.green { background: rgba(39,174,96,0.12); color: var(--green2); }
+
+.nl-featured {
+  background: linear-gradient(135deg, rgba(192,57,43,0.12), var(--card));
+  border: 1px solid rgba(192,57,43,0.3);
+  padding: 32px;
+  margin-bottom: 20px;
+  position: relative; overflow: hidden;
+}
+.nl-featured::before {
+  content: 'TODAY';
+  position: absolute; top: 16px; right: 16px;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 11px; letter-spacing: 0.2em;
+  background: var(--red); color: #fff;
+  padding: 3px 12px;
+}
+
+.nl-featured-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 28px; letter-spacing: 0.05em;
+  color: var(--text); margin-bottom: 12px;
+}
+
+.nl-insight-grid {
+  display: grid; grid-template-columns: repeat(3,1fr);
+  gap: 12px; margin-top: 20px;
+}
+
+.nl-insight {
+  background: rgba(0,0,0,0.3);
+  padding: 16px;
+  border-left: 2px solid var(--gold);
+}
+.nl-insight-lbl {
+  font-size: 9px; font-weight: 700;
+  letter-spacing: 0.18em; text-transform: uppercase;
+  color: var(--muted); margin-bottom: 6px;
+}
+.nl-insight-val {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 20px; font-weight: 400;
+  color: var(--gold);
+}
+.nl-insight-note { font-size: 11px; color: var(--muted); margin-top: 4px; }
+
+/* ══════════════════════════════════
+   TRADE IDEAS PAGE
+══════════════════════════════════ */
+.trade-table { width: 100%; border-collapse: collapse; }
+.trade-table th {
+  font-size: 10px; font-weight: 700;
+  letter-spacing: 0.18em; text-transform: uppercase;
+  color: rgba(240,237,232,0.6); padding: 10px 16px;
+  background: var(--surface);
+  text-align: left; white-space: nowrap;
+}
+.trade-table td {
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--border);
+  font-size: 14px; vertical-align: middle;
+}
+.trade-table tr:hover td { background: rgba(255,255,255,0.02); }
+
+.t-ticker {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 22px; letter-spacing: 0.04em;
+  color: var(--gold); line-height: 1;
+}
+.t-name { font-size: 11px; color: var(--muted); }
+
+.badge {
+  display: inline-block;
+  font-size: 9px; font-weight: 800;
+  letter-spacing: 0.12em; text-transform: uppercase;
+  padding: 3px 10px;
+}
+.b-call { background: rgba(39,174,96,0.12); color: var(--green2); }
+.b-put  { background: rgba(192,57,43,0.12); color: var(--red2); }
+.b-leap { background: rgba(201,168,76,0.12); color: var(--gold); }
+.b-open { background: rgba(41,128,185,0.12); color: #5BA8D5; }
+.b-closed { background: rgba(255,255,255,0.06); color: var(--muted); }
+.b-alert { background: rgba(192,57,43,0.15); color: var(--red2); animation: pulse-glow 2s infinite; }
+
+.pnl-pos { color: var(--green2); font-weight: 700; font-size: 14px; }
+.pnl-neg { color: var(--red2);   font-weight: 700; font-size: 14px; }
+
+.risk-bar { height: 4px; background: rgba(255,255,255,0.08); margin-top: 6px; }
+.risk-fill { height: 100%; background: linear-gradient(90deg, var(--green), var(--gold)); }
+
+/* ══════════════════════════════════
+   LEAPS PAGE
+══════════════════════════════════ */
+.leap-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-top: 2px solid var(--gold);
+  padding: 28px;
+  transition: transform 0.2s, border-color 0.2s;
+}
+.leap-card:hover { transform: translateY(-3px); border-color: rgba(201,168,76,0.5); }
+
+.leap-ticker {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 40px; letter-spacing: 0.04em;
+  color: var(--gold); line-height: 1;
+}
+.leap-contract { font-size: 12px; color: var(--muted); margin-top: 2px; }
+
+.leap-thesis {
+  font-size: 14px; line-height: 1.8;
+  color: rgba(240,237,232,0.72);
+  border-left: 2px solid var(--red);
+  padding-left: 14px; margin: 16px 0;
+}
+
+.conf-lbl {
+  font-size: 9px; font-weight: 700;
+  letter-spacing: 0.18em; text-transform: uppercase;
+  color: var(--muted); margin-bottom: 6px;
+}
+.conf-bar { height: 3px; background: rgba(255,255,255,0.07); }
+.conf-fill { height: 100%; background: linear-gradient(90deg, var(--red), var(--gold)); }
+
+.leap-metrics {
+  display: grid; grid-template-columns: repeat(3,1fr);
+  gap: 12px; margin-top: 18px;
+  padding-top: 18px; border-top: 1px solid var(--border);
+}
+.lm-val {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 22px; font-weight: 400; color: var(--text);
+}
+.lm-lbl {
+  font-size: 9px; font-weight: 700;
+  letter-spacing: 0.14em; text-transform: uppercase;
+  color: var(--muted); margin-top: 3px;
+}
+
+/* ══════════════════════════════════
+   LIVE PAGE
+══════════════════════════════════ */
+.live-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  padding: 28px;
+  display: flex; flex-direction: column; gap: 16px;
+  transition: border-color 0.2s;
+}
+
+.live-badge {
+  display: inline-flex; align-items: center; gap: 7px;
+  font-size: 10px; font-weight: 800;
+  letter-spacing: 0.18em; text-transform: uppercase;
+  color: var(--green2);
+}
+.live-dot {
+  width: 7px; height: 7px; border-radius: 50%;
+  background: var(--green2); animation: pulse-glow 1.5s infinite;
+}
+
+.live-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 26px; letter-spacing: 0.04em; line-height: 1.2;
+}
+
+.live-desc { font-size: 14px; color: rgba(240,237,232,0.7); line-height: 1.75; }
+.live-time { font-size: 12px; font-weight: 600; color: var(--gold); letter-spacing: 0.06em; }
+
+.btn-join {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: var(--green); color: #fff;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 16px; letter-spacing: 0.1em;
+  padding: 12px 28px; border: none; cursor: pointer;
+  text-decoration: none; align-self: flex-start;
+  transition: background 0.2s, transform 0.15s;
+}
+.btn-join:hover { background: var(--green2); transform: translateY(-1px); }
+
+.btn-remind {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: none; color: var(--muted);
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 16px; letter-spacing: 0.1em;
+  padding: 12px 28px; border: 1px solid var(--border);
+  cursor: pointer; align-self: flex-start;
+  transition: border-color 0.2s, color 0.2s;
+}
+.btn-remind:hover { border-color: var(--gold); color: var(--gold); }
+
+/* ══════════════════════════════════
+   VIDEOS PAGE
+══════════════════════════════════ */
+.filter-row { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 22px; }
+
+.flt {
+  font-size: 10px; font-weight: 700;
+  letter-spacing: 0.12em; text-transform: uppercase;
+  padding: 7px 16px; border: 1px solid var(--border);
+  background: none; color: var(--muted); cursor: pointer;
+  transition: all 0.2s; font-family: 'DM Sans', sans-serif;
+}
+.flt:hover, .flt.active { border-color: var(--red); color: var(--red2); background: rgba(192,57,43,0.08); }
+
+.vid-card {
+  background: var(--card); border: 1px solid var(--border);
+  overflow: hidden; cursor: pointer;
+  transition: border-color 0.2s, transform 0.2s;
+}
+.vid-card:hover { border-color: rgba(192,57,43,0.3); transform: translateY(-3px); }
+
+.vid-thumb {
+  width: 100%; aspect-ratio: 16/9;
+  background: linear-gradient(135deg, var(--surface), var(--black));
+  display: flex; align-items: center; justify-content: center;
+  position: relative; overflow: hidden;
+}
+.vid-wm {
+  position: absolute; inset: 0;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 72px; letter-spacing: 0.06em;
+  color: transparent; -webkit-text-stroke: 1px rgba(192,57,43,0.1);
+  display: flex; align-items: center; justify-content: center;
+  pointer-events: none;
+}
+.play-btn {
+  width: 48px; height: 48px; border-radius: 50%;
+  background: var(--red); display: flex; align-items: center; justify-content: center;
+  font-size: 16px; position: relative; z-index: 1;
+  transition: transform 0.2s, background 0.2s;
+}
+.vid-card:hover .play-btn { transform: scale(1.1); background: var(--red2); }
+.vid-dur {
+  position: absolute; bottom: 8px; right: 8px;
+  background: rgba(0,0,0,0.75); font-size: 10px;
+  font-weight: 600; padding: 2px 8px; letter-spacing: 0.06em;
+}
+.vid-info { padding: 14px 16px; }
+.vid-title { font-size: 13px; font-weight: 600; line-height: 1.45; margin-bottom: 10px; }
+.vid-meta { display: flex; align-items: center; justify-content: space-between; }
+.lvl {
+  font-size: 8px; font-weight: 800;
+  letter-spacing: 0.14em; text-transform: uppercase;
+  padding: 3px 9px;
+}
+.lvl-b { background: rgba(39,174,96,0.1); color: var(--green2); }
+.lvl-i { background: rgba(201,168,76,0.1); color: var(--gold); }
+.lvl-a { background: rgba(192,57,43,0.1); color: var(--red2); }
+.vid-views { font-size: 11px; color: var(--muted); }
+
+/* ══════════════════════════════════
+   FORUM PAGE
+══════════════════════════════════ */
+.compose-bar {
+  background: var(--card); border: 1px solid var(--border);
+  padding: 14px 18px; display: flex; align-items: center; gap: 12px;
+  margin-bottom: 18px; cursor: text; transition: border-color 0.2s;
+}
+.compose-bar:hover { border-color: rgba(192,57,43,0.3); }
+.compose-ph { font-size: 13px; color: rgba(240,237,232,0.18); }
+
+.post-card {
+  background: var(--card); border: 1px solid var(--border);
+  padding: 18px 22px; margin-bottom: 8px;
+  cursor: pointer; transition: border-color 0.2s;
+}
+.post-card:hover { border-color: rgba(192,57,43,0.25); }
+
+.post-top { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+
+.post-av {
+  width: 30px; height: 30px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Bebas Neue', sans-serif; font-size: 12px; flex-shrink: 0;
+}
+
+.post-meta { font-size: 13px; color: rgba(240,237,232,0.65); }
+.post-meta strong { color: var(--text); }
+
+.post-ptag {
+  font-size: 8px; font-weight: 800;
+  letter-spacing: 0.14em; text-transform: uppercase;
+  padding: 2px 8px; margin-left: 6px;
+}
+.ptag-an { background: rgba(41,128,185,0.12); color: #5BA8D5; }
+.ptag-q  { background: rgba(39,174,96,0.1); color: var(--green2); }
+.ptag-al { background: rgba(192,57,43,0.1); color: var(--red2); }
+.ptag-w  { background: rgba(201,168,76,0.1); color: var(--gold); }
+
+.post-title { font-size: 14px; font-weight: 600; margin-bottom: 6px; line-height: 1.45; }
+.post-preview { font-size: 14px; color: rgba(240,237,232,0.7); line-height: 1.7; }
+
+.post-foot {
+  display: flex; gap: 18px; margin-top: 12px;
+  padding-top: 10px; border-top: 1px solid var(--border);
+}
+.pact {
+  display: flex; align-items: center; gap: 5px;
+  font-size: 12px; color: var(--muted);
+  background: none; border: none; cursor: pointer;
+  font-family: 'DM Sans', sans-serif; padding: 0;
+  transition: color 0.2s;
+}
+.pact:hover { color: var(--gold); }
+
+/* ══════════════════════════════════
+   LEADERBOARD PAGE
+══════════════════════════════════ */
+.lb-table { width: 100%; border-collapse: collapse; }
+.lb-table th {
+  font-size: 9px; font-weight: 700;
+  letter-spacing: 0.18em; text-transform: uppercase;
+  color: var(--muted); padding: 10px 16px;
+  background: var(--surface); text-align: left;
+}
+.lb-table td {
+  padding: 12px 16px; border-bottom: 1px solid var(--border);
+  vertical-align: middle;
+}
+.lb-table tr:hover td { background: rgba(255,255,255,0.02); }
+
+.lb-rank {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 26px; color: var(--muted); text-align: center;
+}
+.lb-rank.top1 { color: var(--gold); }
+.lb-rank.top2 { color: #A8A8A8; }
+.lb-rank.top3 { color: #CD7F32; }
+
+.lb-av {
+  width: 34px; height: 34px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Bebas Neue', sans-serif; font-size: 13px; flex-shrink: 0;
+}
+
+.lb-user { display: flex; align-items: center; gap: 10px; }
+.lb-name { font-size: 14px; font-weight: 600; }
+.lb-sub { font-size: 12px; color: rgba(240,237,232,0.55); }
+
+.lb-pts {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 26px; color: var(--gold); text-align: right;
+}
+
+.lb-bdg { display: flex; gap: 4px; flex-wrap: wrap; justify-content: flex-end; }
+.bdg {
+  font-size: 8px; font-weight: 800;
+  letter-spacing: 0.1em; text-transform: uppercase;
+  padding: 2px 7px;
+}
+.bdg-gold  { background: rgba(201,168,76,0.12); color: var(--gold); }
+.bdg-green { background: rgba(39,174,96,0.1); color: var(--green2); }
+.bdg-blue  { background: rgba(41,128,185,0.1); color: #5BA8D5; }
+.bdg-red   { background: rgba(192,57,43,0.1); color: var(--red2); }
+
+/* ══════════════════════════════════
+   PRICING PAGE
+══════════════════════════════════ */
+.promo-hero {
+  background: linear-gradient(135deg, var(--surface), var(--card));
+  border: 1px solid var(--border);
+  border-top: 2px solid var(--red);
+  padding: 44px; text-align: center;
+  position: relative; overflow: hidden; margin-bottom: 22px;
+}
+.promo-hero::before {
+  content: 'WARRIOR';
+  position: absolute; inset: 0;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 200px; color: rgba(192,57,43,0.04);
+  display: flex; align-items: center; justify-content: center;
+  pointer-events: none; letter-spacing: 0.1em;
+}
+
+.promo-eyebrow {
+  font-size: 10px; font-weight: 700;
+  letter-spacing: 0.26em; text-transform: uppercase;
+  color: var(--red2); margin-bottom: 12px;
+}
+
+.promo-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(32px, 4vw, 52px);
+  letter-spacing: 0.05em; line-height: 1; margin-bottom: 14px;
+  position: relative; z-index: 1;
+}
+.promo-sub {
+  font-size: 14px; color: var(--muted);
+  max-width: 480px; margin: 0 auto; line-height: 1.8;
+  position: relative; z-index: 1;
+}
+
+.cd-row {
+  display: flex; justify-content: center; gap: 20px;
+  padding: 24px; background: rgba(0,0,0,0.3);
+  border: 1px solid rgba(192,57,43,0.2);
+  margin: 24px 0; text-align: center;
+}
+.cd-blk { display: flex; flex-direction: column; align-items: center; gap: 4px; }
+.cd-num {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 52px; letter-spacing: 0.02em;
+  color: var(--red2); line-height: 1;
+}
+.cd-lbl {
+  font-size: 9px; font-weight: 700;
+  letter-spacing: 0.2em; text-transform: uppercase;
+  color: var(--muted);
+}
+.cd-sep {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 40px; color: var(--border);
+  align-self: flex-start; padding-top: 4px;
+}
+
+.pricing-grid {
+  display: grid; grid-template-columns: repeat(3,1fr);
+  gap: 2px; margin-bottom: 24px;
+}
+
+.price-card {
+  background: var(--surface);
+  padding: 36px 28px; position: relative;
+  transition: transform 0.3s;
+}
+.price-card:hover { transform: translateY(-4px); }
+.price-card.feat {
+  background: linear-gradient(180deg, rgba(192,57,43,0.1) 0%, var(--surface) 60%);
+  border-top: 2px solid var(--red);
+}
+.pc-popular {
+  position: absolute; top: -1px; left: 50%;
+  transform: translateX(-50%);
+  background: var(--red); color: #fff;
+  font-size: 8px; font-weight: 800;
+  letter-spacing: 0.18em; text-transform: uppercase;
+  padding: 3px 16px; white-space: nowrap;
+}
+.pc-rank {
+  font-size: 9px; font-weight: 700;
+  letter-spacing: 0.22em; text-transform: uppercase;
+  color: var(--red2); margin-bottom: 12px;
+}
+.pc-name {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 38px; letter-spacing: 0.06em;
+  color: var(--text); line-height: 1; margin-bottom: 4px;
+}
+.pc-price {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 52px; font-weight: 300;
+  color: var(--gold); line-height: 1; margin: 18px 0;
+}
+.pc-price sup { font-size: 22px; vertical-align: super; }
+.pc-price sub { font-size: 16px; color: var(--muted); }
+
+.pc-feats {
+  list-style: none; margin: 20px 0;
+  display: flex; flex-direction: column; gap: 10px;
+}
+.pc-feats li {
+  font-size: 14px; color: rgba(240,237,232,0.75);
+  display: flex; gap: 10px; align-items: flex-start;
+}
+.ck  { color: var(--gold); flex-shrink: 0; }
+.xk  { color: rgba(240,237,232,0.15); flex-shrink: 0; }
+
+.pc-btn {
+  display: block; width: 100%;
+  background: var(--red); color: #fff;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 18px; letter-spacing: 0.1em;
+  padding: 13px; border: none; cursor: pointer;
+  text-align: center; text-decoration: none;
+  transition: background 0.2s, transform 0.15s;
+}
+.pc-btn:hover { background: var(--red2); transform: translateY(-1px); }
+.pc-btn.ghost {
+  background: none; border: 1px solid var(--border);
+  color: var(--muted);
+}
+.pc-btn.ghost:hover { border-color: var(--gold); color: var(--gold); background: rgba(201,168,76,0.06); }
+
+/* RESPONSIVE */
+@media (max-width: 1100px) {
+  :root { --sidebar: 210px; }
+  .g3, .g4 { grid-template-columns: repeat(2,1fr); }
+  .pricing-grid { grid-template-columns: 1fr; }
+  .nl-insight-grid { grid-template-columns: 1fr; }
+}
+@media (max-width: 768px) {
+  .sidebar { display: none; }
+  .g2, .g3, .g4 { grid-template-columns: 1fr; }
+  .ticker { display: none; }
+}
+</style>
+</head>
+<body>
+
+<!-- ══════ LOGIN ══════ -->
+<div id="login-screen">
+  <div class="login-grid"></div>
+  <div class="login-glow"></div>
+  <div class="login-box">
+    <div class="login-logo">
+      <div class="logo-hex"><span>WF</span></div>
+      <div class="login-brand">WARRIOR<span>FREEDOM</span></div>
+    </div>
+    <div class="login-sub">Members Platform · warriorfreedom.ai</div>
+
+    <!-- LOGIN FORM -->
+    <div id="login-form">
+      <label class="lbl">Email Address</label>
+      <input class="inp" type="email" id="li-email" placeholder="you@example.com"/>
+
+      <label class="lbl">Password</label>
+      <input class="inp" type="password" id="li-pass" placeholder="••••••••"/>
+
+      <button class="login-btn" onclick="doLogin()">ACCESS THE PLATFORM →</button>
+
+      <div class="login-foot">
+        <a href="#" onclick="showForgot(event)">Forgot password?</a>
+        &nbsp;·&nbsp;
+        Not a member? <a href="#" onclick="showSignup(event)">Join the mission</a>
+      </div>
+    </div>
+
+    <!-- SIGNUP FORM -->
+    <div id="signup-form" style="display:none;">
+      <label class="lbl">Full Name</label>
+      <input class="inp" type="text" id="su-name" placeholder="John Smith"/>
+
+      <label class="lbl">Email Address</label>
+      <input class="inp" type="email" id="su-email" placeholder="you@example.com"/>
+
+      <label class="lbl">Password</label>
+      <input class="inp" type="password" id="su-pass" placeholder="Minimum 8 characters"/>
+
+      <label class="lbl">Confirm Password</label>
+      <input class="inp" type="password" id="su-pass2" placeholder="Repeat your password"/>
+
+      <button class="login-btn" onclick="doSignup()">CREATE MY ACCOUNT →</button>
+
+      <div class="login-foot">
+        Already a member? <a href="#" onclick="showLogin(event)">Sign in here</a>
+      </div>
+    </div>
+
+    <!-- FORGOT PASSWORD FORM -->
+    <div id="forgot-form" style="display:none;">
+      <div style="font-size:13px;color:var(--muted);line-height:1.75;margin-bottom:20px;">
+        Enter your email address and we'll send you a link to reset your password.
+      </div>
+      <label class="lbl">Email Address</label>
+      <input class="inp" type="email" id="fp-email" placeholder="you@example.com"/>
+
+      <button class="login-btn" onclick="doForgotPassword()">SEND RESET LINK →</button>
+
+      <div class="login-foot">
+        <a href="#" onclick="showLogin(event)">← Back to sign in</a>
+      </div>
+    </div>
+
+    <div class="login-demo" id="login-demo-note">warriorfreedom.ai · Members Only Platform</div>
+  </div>
+</div>
+
+<!-- ══════ APP ══════ -->
+<div id="app">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sb-logo">
+      <div class="logo-hex" style="width:30px;height:30px;"><span style="font-size:13px;">WF</span></div>
+      <div class="sb-brand">WARRIOR<span>FREEDOM</span><small>.AI PLATFORM</small></div>
+    </div>
+
+    <div class="sb-section">Command Center</div>
+    <div class="nav-item active" onclick="nav(this,'dashboard')">
+      <span class="nav-icon">⬡</span> Dashboard
+    </div>
+
+    <div class="sb-section">Daily Intel</div>
+    <div class="nav-item" onclick="nav(this,'newsletter')">
+      <span class="nav-icon">📰</span> Market Newsletter
+      <span class="nav-badge">NEW</span>
+    </div>
+    <div class="nav-item" onclick="nav(this,'trades')">
+      <span class="nav-icon">📊</span> Trade Ideas
+      <span class="nav-badge">5</span>
+    </div>
+    <div class="nav-item" onclick="nav(this,'risk')">
+      <span class="nav-icon">🛡</span> Risk Management
+    </div>
+
+    <div class="sb-section">Operator+</div>
+    <div class="nav-item" onclick="nav(this,'leaps')">
+      <span class="nav-icon">🚀</span> LEAP Opportunities
+      <span class="nav-badge gold">3</span>
+    </div>
+    <div class="nav-item" onclick="nav(this,'live')">
+      <span class="nav-icon">🔴</span> Live Trading
+      <span class="nav-badge live">LIVE</span>
+    </div>
+
+    <div class="sb-section">Learn</div>
+    <div class="nav-item" onclick="nav(this,'videos')">
+      <span class="nav-icon">▶</span> Teaching Videos
+    </div>
+
+    <div class="sb-section">Community</div>
+    <div class="nav-item" onclick="nav(this,'forum')">
+      <span class="nav-icon">💬</span> Forum
+      <span class="nav-badge">14</span>
+    </div>
+    <div class="nav-item" onclick="nav(this,'leaderboard')">
+      <span class="nav-icon">🏆</span> Leaderboard
+    </div>
+
+    <div class="sb-section">Account</div>
+    <div class="nav-item" onclick="nav(this,'pricing')">
+      <span class="nav-icon">⚡</span> Plans & Pricing
+    </div>
+
+    <div class="sb-footer">
+      <div class="av">JD</div>
+      <div>
+        <div class="sb-user-name">John D.</div>
+        <div class="sb-user-rank">⚔ Operator</div>
+      </div>
+      <button class="logout-btn" onclick="doLogout()">↩</button>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <div class="main">
+    <div class="topbar">
+      <div class="topbar-title" id="tb-title">DASHBOARD</div>
+      <div class="topbar-right">
+        <div class="ticker" id="live-ticker">
+          <div class="tick"><span class="tick-sym">SPY</span><span class="tick-up">▲ 527.34</span></div>
+          <div class="tick"><span class="tick-sym">QQQ</span><span class="tick-dn">▼ 441.20</span></div>
+          <div class="tick"><span class="tick-sym">VIX</span><span class="tick-up">▲ 18.42</span></div>
+          <div class="tick"><span class="tick-sym">NVDA</span><span class="tick-up">▲ 884.12</span></div>
+        </div>
+        <div class="icon-btn">🔔<span class="dot"></span></div>
+        <div class="av" style="cursor:default;">JD</div>
+      </div>
+    </div>
+
+    <div class="content">
+
+      <!-- ── DASHBOARD ── -->
+      <div class="page active" id="page-dashboard">
+        <div class="pg-header">
+          <div>
+            <div class="pg-title">GOOD MORNING, <span>WARRIOR.</span></div>
+            <div class="pg-sub">Tuesday, April 14, 2026 · Market opens in 47 minutes</div>
+          </div>
+        </div>
+
+        <div class="g4">
+          <div class="card red-top">
+            <div class="stat-val green">+11%</div>
+            <div class="stat-lbl">Daniel's Monthly Return</div>
+            <div class="stat-delta delta-up">↑ Personal AI-guided result</div>
+          </div>
+          <div class="card">
+            <div class="stat-val sm">5</div>
+            <div class="stat-lbl">Active Trade Ideas</div>
+            <div class="stat-delta" style="color:var(--muted);">3 calls · 2 puts</div>
+          </div>
+          <div class="card">
+            <div class="stat-val sm">3</div>
+            <div class="stat-lbl">LEAP Setups</div>
+            <div class="stat-delta delta-up">High AI conviction</div>
+          </div>
+          <div class="card" style="border-top:2px solid var(--green);">
+            <div class="stat-val sm" style="color:var(--green2);">🔴</div>
+            <div class="stat-lbl">Live Now</div>
+            <div class="stat-delta delta-up" onclick="nav(document.querySelector('[onclick*=live]'),'live')" style="cursor:pointer;">Join session →</div>
+          </div>
+        </div>
+
+        <div class="sec-lbl">Today's Newsletter Preview</div>
+        <div class="card" style="border-left:3px solid var(--red);padding:24px 28px;margin-bottom:14px;">
+          <div style="font-size:10px;font-weight:700;letter-spacing:0.2em;text-transform:uppercase;color:var(--red2);margin-bottom:8px;">📰 Daily Market Brief · Apr 14, 2026</div>
+          <div style="font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:0.04em;margin-bottom:10px;">MARKETS ON EDGE — KEY LEVELS TO WATCH TODAY</div>
+          <div style="font-size:13px;color:var(--muted);line-height:1.75;">VIX holding above 18 signals elevated fear. SPY is testing critical support at 524. My AI engine is flagging 2 high-probability setups for today's open. Full breakdown in the newsletter.</div>
+          <button onclick="nav(document.querySelector('[onclick*=newsletter]'),'newsletter')" style="margin-top:16px;background:var(--red);color:#fff;font-family:'Bebas Neue',sans-serif;font-size:14px;letter-spacing:0.1em;padding:9px 22px;border:none;cursor:pointer;">READ FULL NEWSLETTER →</button>
+        </div>
+
+        <div class="sec-lbl">Activity Feed</div>
+        <div class="card">
+          <div class="feed">
+            <div class="feed-item">
+              <div class="fd fd-red"></div>
+              <div>
+                <div class="feed-text"><strong>New Trade Idea:</strong> NVDA $900 Call — 21 DTE · AI Score: 88% · Entry $14.20</div>
+                <div class="feed-time">Today, 9:12 AM</div>
+              </div>
+            </div>
+            <div class="feed-item">
+              <div class="fd fd-gold"></div>
+              <div>
+                <div class="feed-text"><strong>Newsletter Published:</strong> "Markets on Edge — Key Levels to Watch Today"</div>
+                <div class="feed-time">Today, 8:30 AM</div>
+              </div>
+            </div>
+            <div class="feed-item">
+              <div class="fd fd-green"></div>
+              <div>
+                <div class="feed-text"><strong>Trade Closed:</strong> AAPL $195 Put +81% · Target hit · Position closed</div>
+                <div class="feed-time">Yesterday, 3:45 PM</div>
+              </div>
+            </div>
+            <div class="feed-item">
+              <div class="fd fd-blue"></div>
+              <div>
+                <div class="feed-text"><strong>Forum:</strong> "Breaking down the VIX spike — when to load puts" by @TradingMike gaining traction</div>
+                <div class="feed-time">Yesterday, 2:10 PM</div>
+              </div>
+            </div>
+            <div class="feed-item">
+              <div class="fd fd-gold"></div>
+              <div>
+                <div class="feed-text"><strong>LEAP Update:</strong> NVDA position up +42% — AI thesis intact, holding strong</div>
+                <div class="feed-time">Yesterday, 11:00 AM</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── NEWSLETTER ── -->
+      <div class="page" id="page-newsletter">
+        <div class="pg-header">
+          <div>
+            <div class="pg-title">MARKET <span>NEWSLETTER</span></div>
+            <div class="pg-sub">Daily market intelligence — insights, analysis, and what to watch.</div>
+          </div>
+        </div>
+
+        <div class="nl-featured">
+          <div style="font-size:10px;font-weight:700;letter-spacing:0.2em;text-transform:uppercase;color:var(--red2);margin-bottom:10px;">📰 Today · Apr 14, 2026</div>
+          <div class="nl-featured-title">MARKETS ON EDGE — KEY LEVELS TO WATCH TODAY</div>
+          <div style="font-size:14px;line-height:1.85;color:rgba(240,237,232,0.65);">
+            Good morning, Warriors. VIX is holding above 18 — that's the line in the sand. When we see this combined with SPY testing the 524 support zone and QQQ below the 50-day MA, my AI engine goes on high alert. Today I'm watching 2 specific setups that fit my criteria for high-probability income trades. I'll cover both in the trade ideas section. Risk management note: keep position sizes at 2-3% of portfolio max given current IV environment.
+          </div>
+          <div class="nl-insight-grid">
+            <div class="nl-insight">
+              <div class="nl-insight-lbl">Market Bias</div>
+              <div class="nl-insight-val" style="color:var(--red2);">Cautious</div>
+              <div class="nl-insight-note">VIX elevated, breadth weak</div>
+            </div>
+            <div class="nl-insight">
+              <div class="nl-insight-lbl">SPY Key Level</div>
+              <div class="nl-insight-val">524.00</div>
+              <div class="nl-insight-note">Critical support — watch closely</div>
+            </div>
+            <div class="nl-insight">
+              <div class="nl-insight-lbl">AI Signal</div>
+              <div class="nl-insight-val" style="color:var(--green2);">2 Setups</div>
+              <div class="nl-insight-note">High-probability income plays</div>
+            </div>
+          </div>
+          <div style="margin-top:20px;display:flex;gap:10px;flex-wrap:wrap;">
+            <span class="nl-tag red">Earnings Watch</span>
+            <span class="nl-tag gold">Income Plays</span>
+            <span class="nl-tag green">Risk Management</span>
+          </div>
+        </div>
+
+        <div class="sec-lbl">Previous Issues</div>
+
+        <div class="nl-card">
+          <div class="nl-date">Apr 13, 2026 — Sunday</div>
+          <div class="nl-title">WEEK AHEAD PLAYBOOK: 5 SETUPS TO WATCH</div>
+          <div class="nl-preview">Earnings season is heating up. My AI is flagging unusual options activity in 3 mega-cap names heading into next week. Here's how I'm positioning ahead of the catalysts — plus key levels to set alerts on.</div>
+          <div class="nl-tags">
+            <span class="nl-tag gold">Weekly Setup</span>
+            <span class="nl-tag red">Earnings Season</span>
+          </div>
+        </div>
+
+        <div class="nl-card">
+          <div class="nl-date">Apr 12, 2026 — Saturday</div>
+          <div class="nl-title">HOW I MANAGE RISK WHEN IV SPIKES OVERNIGHT</div>
+          <div class="nl-preview">One of the most common questions from members — what do you do when implied volatility jumps 8 points before the open? Here's my exact framework: when to hedge, when to hold, and when to cut.</div>
+          <div class="nl-tags">
+            <span class="nl-tag green">Risk Management</span>
+            <span class="nl-tag gold">Framework</span>
+          </div>
+        </div>
+
+        <div class="nl-card">
+          <div class="nl-date">Apr 11, 2026 — Friday</div>
+          <div class="nl-title">MONTHLY WRAP: MARCH RESULTS + LESSONS LEARNED</div>
+          <div class="nl-preview">Full breakdown of every trade taken in March. What the AI got right, one position I exited too early, and how the month stacked up against expectations. Transparency is everything here.</div>
+          <div class="nl-tags">
+            <span class="nl-tag red">Monthly Review</span>
+            <span class="nl-tag gold">Performance</span>
+          </div>
+        </div>
+
+        <div class="nl-card">
+          <div class="nl-date">Apr 10, 2026 — Thursday</div>
+          <div class="nl-title">READING THE TAPE: DARK POOL ACTIVITY DECODED</div>
+          <div class="nl-preview">Unusual block trades hit in 4 names yesterday afternoon. This is exactly the kind of flow my AI monitors in real time. Here's how to interpret dark pool prints and what they're telling us about next week.</div>
+          <div class="nl-tags">
+            <span class="nl-tag gold">Options Flow</span>
+            <span class="nl-tag red">Dark Pool</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── TRADE IDEAS ── -->
+      <div class="page" id="page-trades">
+        <div class="pg-header">
+          <div>
+            <div class="pg-title">TRADE <span>IDEAS</span></div>
+            <div class="pg-sub">Daniel's live trade log — AI-guided setups for income. Updated daily.</div>
+          </div>
+          <div style="font-size:12px;color:var(--muted);">Last update: <strong style="color:var(--green2);">Today 9:47 AM</strong></div>
+        </div>
+
+        <div class="card" style="padding:0;overflow:hidden;">
+          <table class="trade-table">
+            <thead>
+              <tr>
+                <th>Ticker</th>
+                <th>Contract</th>
+                <th>Type</th>
+                <th>Entry</th>
+                <th>Current P&L</th>
+                <th>AI Score</th>
+                <th>Status</th>
+                <th>Thesis</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><div class="t-ticker">NVDA</div><div class="t-name">NVIDIA Corp</div></td>
+                <td style="font-size:13px;">$900C · May 2 '26</td>
+                <td><span class="badge b-call">CALL</span></td>
+                <td>$14.20</td>
+                <td class="pnl-pos">+$1,240</td>
+                <td>
+                  <div style="font-size:13px;font-weight:700;color:var(--gold);">88%</div>
+                  <div class="risk-bar"><div class="risk-fill" style="width:88%"></div></div>
+                </td>
+                <td><span class="badge b-open">Open</span></td>
+                <td style="font-size:12px;color:var(--muted);max-width:180px;">Strong delta, IV below 30-day avg. AI momentum signal active.</td>
+              </tr>
+              <tr>
+                <td><div class="t-ticker">SPY</div><div class="t-name">S&P 500 ETF</div></td>
+                <td style="font-size:13px;">$520P · Apr 26 '26</td>
+                <td><span class="badge b-put">PUT</span></td>
+                <td>$2.15</td>
+                <td class="pnl-pos">+$980</td>
+                <td>
+                  <div style="font-size:13px;font-weight:700;color:var(--gold);">76%</div>
+                  <div class="risk-bar"><div class="risk-fill" style="width:76%"></div></div>
+                </td>
+                <td><span class="badge b-alert">⚡ Alert</span></td>
+                <td style="font-size:12px;color:var(--muted);max-width:180px;">Hedge position. Consider closing at current levels — target hit.</td>
+              </tr>
+              <tr>
+                <td><div class="t-ticker">META</div><div class="t-name">Meta Platforms</div></td>
+                <td style="font-size:13px;">$520C · May 9 '26</td>
+                <td><span class="badge b-call">CALL</span></td>
+                <td>$7.80</td>
+                <td class="pnl-neg">-$420</td>
+                <td>
+                  <div style="font-size:13px;font-weight:700;color:var(--gold);">71%</div>
+                  <div class="risk-bar"><div class="risk-fill" style="width:71%"></div></div>
+                </td>
+                <td><span class="badge b-open">Open</span></td>
+                <td style="font-size:12px;color:var(--muted);max-width:180px;">Earnings play. Watching — stop at -40%.</td>
+              </tr>
+              <tr>
+                <td><div class="t-ticker">AAPL</div><div class="t-name">Apple Inc.</div></td>
+                <td style="font-size:13px;">$195P · Apr 19 '26</td>
+                <td><span class="badge b-put">PUT</span></td>
+                <td>$3.20</td>
+                <td class="pnl-pos">+$5,800</td>
+                <td>
+                  <div style="font-size:13px;font-weight:700;color:var(--gold);">92%</div>
+                  <div class="risk-bar"><div class="risk-fill" style="width:92%"></div></div>
+                </td>
+                <td><span class="badge b-closed">Closed</span></td>
+                <td style="font-size:12px;color:var(--muted);max-width:180px;">Closed +81%. Target hit. AI exit signal confirmed.</td>
+              </tr>
+              <tr>
+                <td><div class="t-ticker">QQQ</div><div class="t-name">Nasdaq ETF</div></td>
+                <td style="font-size:13px;">$440C · May 16 '26</td>
+                <td><span class="badge b-call">CALL</span></td>
+                <td>$5.60</td>
+                <td class="pnl-pos">+$640</td>
+                <td>
+                  <div style="font-size:13px;font-weight:700;color:var(--gold);">79%</div>
+                  <div class="risk-bar"><div class="risk-fill" style="width:79%"></div></div>
+                </td>
+                <td><span class="badge b-open">Open</span></td>
+                <td style="font-size:12px;color:var(--muted);max-width:180px;">Tech rebound play. Above key moving average, volume confirming.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div style="margin-top:14px;font-size:11px;color:rgba(240,237,232,0.2);line-height:1.7;border-top:1px solid var(--border);padding-top:12px;">
+          ⚠️ These are Daniel's personal trade ideas shared for educational purposes. They are not financial advice. All trading involves substantial risk. Past results do not guarantee future performance. Always conduct your own due diligence.
+        </div>
+      </div>
+
+      <!-- ── RISK MANAGEMENT ── -->
+      <div class="page" id="page-risk">
+        <div class="pg-header">
+          <div>
+            <div class="pg-title">RISK <span>MANAGEMENT</span></div>
+            <div class="pg-sub">The framework that protects capital and keeps warriors in the game.</div>
+          </div>
+        </div>
+
+        <div class="g3" style="margin-bottom:14px;">
+          <div class="card red-top">
+            <div style="font-size:10px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:var(--red2);margin-bottom:10px;">Max Position Size</div>
+            <div class="stat-val sm">2–3%</div>
+            <div class="stat-lbl">Per Trade · Of Total Portfolio</div>
+          </div>
+          <div class="card gold-top">
+            <div style="font-size:10px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:var(--gold);margin-bottom:10px;">Stop Loss Rule</div>
+            <div class="stat-val sm" style="color:var(--gold);">-40%</div>
+            <div class="stat-lbl">Max Loss Per Options Position</div>
+          </div>
+          <div class="card green-top">
+            <div style="font-size:10px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:var(--green2);margin-bottom:10px;">Profit Target</div>
+            <div class="stat-val sm" style="color:var(--green2);">50–100%</div>
+            <div class="stat-lbl">Target Gain Per Position</div>
+          </div>
+        </div>
+
+        <div class="g2">
+          <div class="card">
+            <div style="font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:0.05em;margin-bottom:14px;color:var(--text);">THE WARRIOR RULES</div>
+            <div style="display:flex;flex-direction:column;gap:14px;">
+              <div style="display:flex;gap:14px;padding:14px 0;border-bottom:1px solid var(--border);">
+                <div style="font-family:'Bebas Neue',sans-serif;font-size:28px;color:rgba(192,57,43,0.3);min-width:36px;">01</div>
+                <div>
+                  <div style="font-size:13px;font-weight:600;margin-bottom:4px;">Never risk more than 2-3% per trade</div>
+                  <div style="font-size:12px;color:var(--muted);line-height:1.65;">A single bad trade should never materially impact your portfolio. Size accordingly — always.</div>
+                </div>
+              </div>
+              <div style="display:flex;gap:14px;padding:14px 0;border-bottom:1px solid var(--border);">
+                <div style="font-family:'Bebas Neue',sans-serif;font-size:28px;color:rgba(192,57,43,0.3);min-width:36px;">02</div>
+                <div>
+                  <div style="font-size:13px;font-weight:600;margin-bottom:4px;">Set stops before you enter</div>
+                  <div style="font-size:12px;color:var(--muted);line-height:1.65;">My rule: -40% stop on all options positions. Decide your exit before emotion takes over.</div>
+                </div>
+              </div>
+              <div style="display:flex;gap:14px;padding:14px 0;border-bottom:1px solid var(--border);">
+                <div style="font-family:'Bebas Neue',sans-serif;font-size:28px;color:rgba(192,57,43,0.3);min-width:36px;">03</div>
+                <div>
+                  <div style="font-size:13px;font-weight:600;margin-bottom:4px;">Respect elevated IV environments</div>
+                  <div style="font-size:12px;color:var(--muted);line-height:1.65;">When VIX is above 20, reduce size by 50%. The market is telling you something — listen.</div>
+                </div>
+              </div>
+              <div style="display:flex;gap:14px;padding:14px 0;">
+                <div style="font-family:'Bebas Neue',sans-serif;font-size:28px;color:rgba(192,57,43,0.3);min-width:36px;">04</div>
+                <div>
+                  <div style="font-size:13px;font-weight:600;margin-bottom:4px;">Diversify across expiries</div>
+                  <div style="font-size:12px;color:var(--muted);line-height:1.65;">Never concentrate all positions in the same expiration week. Spread risk across time.</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="card">
+            <div style="font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:0.05em;margin-bottom:14px;color:var(--text);">POSITION SIZING GUIDE</div>
+            <div style="font-size:13px;color:var(--muted);line-height:1.8;margin-bottom:20px;">Use this table to size positions correctly based on your account value. Warrior Freedom recommends 2% base sizing.</div>
+            <table style="width:100%;border-collapse:collapse;font-size:13px;">
+              <thead>
+                <tr style="font-size:9px;letter-spacing:0.16em;text-transform:uppercase;color:var(--muted);">
+                  <th style="text-align:left;padding:8px 0;border-bottom:1px solid var(--border);">Account Size</th>
+                  <th style="text-align:right;padding:8px 0;border-bottom:1px solid var(--border);">2% Size</th>
+                  <th style="text-align:right;padding:8px 0;border-bottom:1px solid var(--border);">3% Size</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td style="padding:10px 0;border-bottom:1px solid var(--border);color:var(--muted);">$10,000</td><td style="text-align:right;padding:10px 0;border-bottom:1px solid var(--border);">$200</td><td style="text-align:right;padding:10px 0;border-bottom:1px solid var(--border);">$300</td></tr>
+                <tr><td style="padding:10px 0;border-bottom:1px solid var(--border);color:var(--muted);">$25,000</td><td style="text-align:right;padding:10px 0;border-bottom:1px solid var(--border);">$500</td><td style="text-align:right;padding:10px 0;border-bottom:1px solid var(--border);">$750</td></tr>
+                <tr><td style="padding:10px 0;border-bottom:1px solid var(--border);color:var(--muted);">$50,000</td><td style="text-align:right;padding:10px 0;border-bottom:1px solid var(--border);">$1,000</td><td style="text-align:right;padding:10px 0;border-bottom:1px solid var(--border);">$1,500</td></tr>
+                <tr><td style="padding:10px 0;border-bottom:1px solid var(--border);color:var(--muted);">$100,000</td><td style="text-align:right;padding:10px 0;border-bottom:1px solid var(--border);">$2,000</td><td style="text-align:right;padding:10px 0;border-bottom:1px solid var(--border);">$3,000</td></tr>
+                <tr><td style="padding:10px 0;color:var(--muted);">$250,000</td><td style="text-align:right;padding:10px 0;">$5,000</td><td style="text-align:right;padding:10px 0;">$7,500</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── LEAPS ── -->
+      <div class="page" id="page-leaps">
+        <div class="pg-header">
+          <div>
+            <div class="pg-title">LEAP <span>OPPORTUNITIES</span></div>
+            <div class="pg-sub">Long-dated, high-conviction setups. AI-scored and thesis-backed.</div>
+          </div>
+          <span class="badge b-open" style="padding:6px 14px;font-size:10px;">Operator & Commander Only</span>
+        </div>
+        <div class="g3">
+          <div class="leap-card">
+            <div class="leap-ticker">NVDA</div>
+            <div class="leap-contract">$160C · Jan 2027 · AI Conviction: HIGH</div>
+            <div class="leap-thesis">Semiconductor supercycle driven by AI infrastructure. Data center demand accelerating, margins expanding. Institutional accumulation visible in dark pool flow. This is a multi-quarter hold thesis.</div>
+            <div class="conf-lbl">AI Confidence Score</div>
+            <div class="conf-bar"><div class="conf-fill" style="width:88%"></div></div>
+            <div class="leap-metrics">
+              <div><div class="lm-val" style="color:var(--gold);">88%</div><div class="lm-lbl">AI Score</div></div>
+              <div><div class="lm-val">$18.40</div><div class="lm-lbl">Entry Target</div></div>
+              <div><div class="lm-val" style="color:var(--green2);">3.2×</div><div class="lm-lbl">Target Return</div></div>
+            </div>
+          </div>
+          <div class="leap-card">
+            <div class="leap-ticker">AMZN</div>
+            <div class="leap-contract">$220C · Dec 2026 · AI Conviction: MEDIUM</div>
+            <div class="leap-thesis">AWS reaccelerating post cloud slowdown. Ad business hitting scale. Margin expansion story intact. Key resistance at $205 — waiting for confirmed breakout before adding size.</div>
+            <div class="conf-lbl">AI Confidence Score</div>
+            <div class="conf-bar"><div class="conf-fill" style="width:72%"></div></div>
+            <div class="leap-metrics">
+              <div><div class="lm-val" style="color:var(--gold);">72%</div><div class="lm-lbl">AI Score</div></div>
+              <div><div class="lm-val">$11.20</div><div class="lm-lbl">Entry Target</div></div>
+              <div><div class="lm-val" style="color:var(--green2);">2.4×</div><div class="lm-lbl">Target Return</div></div>
+            </div>
+          </div>
+          <div class="leap-card">
+            <div class="leap-ticker">MSFT</div>
+            <div class="leap-contract">$450C · Mar 2027 · AI Conviction: HIGH</div>
+            <div class="leap-thesis">Copilot monetization kicking in across enterprise. Azure growth re-rated upward by analysts. Defensive growth profile makes this a core LEAP position. Holding through volatility.</div>
+            <div class="conf-lbl">AI Confidence Score</div>
+            <div class="conf-bar"><div class="conf-fill" style="width:83%"></div></div>
+            <div class="leap-metrics">
+              <div><div class="lm-val" style="color:var(--gold);">83%</div><div class="lm-lbl">AI Score</div></div>
+              <div><div class="lm-val">$9.80</div><div class="lm-lbl">Entry Target</div></div>
+              <div><div class="lm-val" style="color:var(--green2);">2.8×</div><div class="lm-lbl">Target Return</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── LIVE ── -->
+      <div class="page" id="page-live">
+        <div class="pg-header">
+          <div>
+            <div class="pg-title">LIVE <span>TRADING</span></div>
+            <div class="pg-sub">Watch Daniel trade in real time. Sessions, replays, and upcoming events.</div>
+          </div>
+        </div>
+        <div class="g2">
+          <div class="live-card" style="border-color:rgba(39,174,96,0.3);border-top:2px solid var(--green);">
+            <div class="live-badge"><div class="live-dot"></div> Live Right Now</div>
+            <div class="live-title">MORNING OPEN +<br>AI SCAN RESULTS</div>
+            <div class="live-desc">Daniel is live breaking down the open, running through today's AI-flagged setups, and walking through active positions in real time. Q&A open to all members.</div>
+            <div class="live-time">📍 YouTube Live · Started 9:30 AM</div>
+            <div style="display:flex;gap:10px;flex-wrap:wrap;">
+              <button class="btn-join">JOIN NOW →</button>
+            </div>
+          </div>
+          <div class="live-card">
+            <div style="font-size:10px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:var(--muted);">Upcoming</div>
+            <div class="live-title">WEEKLY DEEP DIVE:<br>EARNINGS PLAYS</div>
+            <div class="live-desc">90 minutes breaking down AI-flagged earnings setups for next week. Full position breakdown, entry/exit targets, and live Q&A for all members.</div>
+            <div class="live-time">📅 Wednesday, Apr 16 · 7:00 PM EST</div>
+            <div style="display:flex;gap:10px;flex-wrap:wrap;">
+              <button class="btn-remind">SET REMINDER</button>
+            </div>
+          </div>
+          <div class="live-card">
+            <div style="font-size:10px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:var(--muted);">Upcoming</div>
+            <div class="live-title">COMMANDER SESSION:<br>1-ON-1 COACHING WEEK</div>
+            <div class="live-desc">Commander tier members — your monthly 1-on-1 coaching sessions are being scheduled this week. Book your slot below. 3 sessions available per month.</div>
+            <div class="live-time">📅 Apr 17–19 · By Appointment</div>
+            <div style="display:flex;gap:10px;flex-wrap:wrap;">
+              <button class="btn-join" style="background:var(--gold);color:#080A10;">BOOK MY SESSION</button>
+            </div>
+          </div>
+          <div class="live-card">
+            <div style="font-size:10px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:var(--gold);">Replay Available</div>
+            <div class="live-title">APRIL TRADE REVIEW:<br>FULL MONTH BREAKDOWN</div>
+            <div class="live-desc">Complete replay of last week's monthly performance review. Every position dissected — what the AI flagged, what hit, what didn't, and the game plan going forward.</div>
+            <div class="live-time">⏺ 1hr 28min · 1,204 views</div>
+            <div style="display:flex;gap:10px;flex-wrap:wrap;">
+              <button class="btn-join" style="background:var(--gold);color:#080A10;">WATCH REPLAY</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── VIDEOS ── -->
+      <div class="page" id="page-videos">
+        <div class="pg-header">
+          <div>
+            <div class="pg-title">TEACHING <span>VIDEOS</span></div>
+            <div class="pg-sub">Master options trading — from fundamentals to AI-guided strategy.</div>
+          </div>
+        </div>
+        <div class="filter-row">
+          <button class="flt active">All</button>
+          <button class="flt">Beginner</button>
+          <button class="flt">Intermediate</button>
+          <button class="flt">Advanced</button>
+          <button class="flt">AI Strategy</button>
+          <button class="flt">Risk Management</button>
+          <button class="flt">Live Replays</button>
+        </div>
+        <div class="g3">
+          <div class="vid-card">
+            <div class="vid-thumb"><div class="vid-wm">IV</div><div class="play-btn">▶</div><div class="vid-dur">18:42</div></div>
+            <div class="vid-info">
+              <div class="vid-title">Reading IV Skew Like a Pro</div>
+              <div class="vid-meta"><span class="lvl lvl-i">Intermediate</span><span class="vid-views">2.4k views</span></div>
+            </div>
+          </div>
+          <div class="vid-card">
+            <div class="vid-thumb"><div class="vid-wm">AI</div><div class="play-btn">▶</div><div class="vid-dur">32:15</div></div>
+            <div class="vid-info">
+              <div class="vid-title">How My AI Engine Identifies High-Probability Setups</div>
+              <div class="vid-meta"><span class="lvl lvl-a">Advanced</span><span class="vid-views">5.1k views</span></div>
+            </div>
+          </div>
+          <div class="vid-card">
+            <div class="vid-thumb"><div class="vid-wm">0DTE</div><div class="play-btn">▶</div><div class="vid-dur">24:08</div></div>
+            <div class="vid-info">
+              <div class="vid-title">0DTE Options: Rules I Never Break</div>
+              <div class="vid-meta"><span class="lvl lvl-a">Advanced</span><span class="vid-views">3.8k views</span></div>
+            </div>
+          </div>
+          <div class="vid-card">
+            <div class="vid-thumb"><div class="vid-wm">Δ</div><div class="play-btn">▶</div><div class="vid-dur">14:30</div></div>
+            <div class="vid-info">
+              <div class="vid-title">Greeks 101: Delta, Theta & Vega Explained</div>
+              <div class="vid-meta"><span class="lvl lvl-b">Beginner</span><span class="vid-views">7.2k views</span></div>
+            </div>
+          </div>
+          <div class="vid-card">
+            <div class="vid-thumb"><div class="vid-wm">RISK</div><div class="play-btn">▶</div><div class="vid-dur">21:44</div></div>
+            <div class="vid-info">
+              <div class="vid-title">Position Sizing & The -40% Stop Rule</div>
+              <div class="vid-meta"><span class="lvl lvl-b">Beginner</span><span class="vid-views">6.0k views</span></div>
+            </div>
+          </div>
+          <div class="vid-card">
+            <div class="vid-thumb"><div class="vid-wm">LEAP</div><div class="play-btn">▶</div><div class="vid-dur">28:55</div></div>
+            <div class="vid-info">
+              <div class="vid-title">Building a LEAP Portfolio That Compounds</div>
+              <div class="vid-meta"><span class="lvl lvl-i">Intermediate</span><span class="vid-views">4.6k views</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── FORUM ── -->
+      <div class="page" id="page-forum">
+        <div class="pg-header">
+          <div>
+            <div class="pg-title">COMMUNITY <span>FORUM</span></div>
+            <div class="pg-sub">Warriors share ideas, trades, and insights. Strength in numbers.</div>
+          </div>
+          <button style="background:var(--red);color:#fff;font-family:'Bebas Neue',sans-serif;font-size:16px;letter-spacing:0.1em;padding:10px 24px;border:none;cursor:pointer;">+ NEW POST</button>
+        </div>
+        <div class="filter-row">
+          <button class="flt active">All Posts</button>
+          <button class="flt">Analysis</button>
+          <button class="flt">Questions</button>
+          <button class="flt">Alerts</button>
+          <button class="flt">Wins 🏆</button>
+        </div>
+        <div class="compose-bar">
+          <div class="av" style="width:30px;height:30px;font-size:12px;">JD</div>
+          <div class="compose-ph">Share a trade idea, ask a question, or start a discussion…</div>
+        </div>
+        <div id="forum-posts-container">
+          <div class="post-top">
+            <div class="post-av" style="background:linear-gradient(135deg,var(--gold),#7A5A1A);">TM</div>
+            <div class="post-meta"><strong>TradingMike</strong> · 2h ago<span class="post-ptag ptag-an">Analysis</span></div>
+          </div>
+          <div class="post-title">Breaking down the VIX spike strategy — when to load up on puts</div>
+          <div class="post-preview">When VIX crosses 20 and term structure flattens, historically the best play is 30-45 DTE puts on SPY and QQQ. Here's the data from the last 18 months and how it lines up with Daniel's AI signals...</div>
+          <div class="post-foot">
+            <button class="pact">▲ 42 Upvotes</button>
+            <button class="pact">💬 18 Comments</button>
+            <button class="pact">🔗 Share</button>
+            <button class="pact" style="margin-left:auto;">🔖 Save</button>
+          </div>
+        </div>
+        <div class="post-card">
+          <div class="post-top">
+            <div class="post-av" style="background:linear-gradient(135deg,var(--red),#7A1010);">KW</div>
+            <div class="post-meta"><strong>KellyW</strong> · 5h ago<span class="post-ptag ptag-w">Win 🏆</span></div>
+          </div>
+          <div class="post-title">Followed Daniel's NVDA setup — closed at +127%</div>
+          <div class="post-preview">Entered the $130 calls last Tuesday after watching the IV Skew video. Set my stop at -40% as taught, took profit at Daniel's target. Biggest single trade win of my life.</div>
+          <div class="post-foot">
+            <button class="pact">▲ 87 Upvotes</button>
+            <button class="pact">💬 34 Comments</button>
+            <button class="pact">🔗 Share</button>
+            <button class="pact" style="margin-left:auto;">🔖 Save</button>
+          </div>
+        </div>
+        <div class="post-card">
+          <div class="post-top">
+            <div class="post-av" style="background:linear-gradient(135deg,#2980B9,#1A4A70);">SR</div>
+            <div class="post-meta"><strong>SarahRocks</strong> · 1d ago<span class="post-ptag ptag-q">Question</span></div>
+          </div>
+          <div class="post-title">How do you handle a LEAP position when IV spikes unexpectedly?</div>
+          <div class="post-preview">I'm holding the AMZN LEAP from the opportunities page and IV just jumped 8 points overnight. Roll, hedge with a short call, or hold? Would love Daniel's take or experienced member input...</div>
+          <div class="post-foot">
+            <button class="pact">▲ 21 Upvotes</button>
+            <button class="pact">💬 12 Comments</button>
+            <button class="pact">🔗 Share</button>
+            <button class="pact" style="margin-left:auto;">🔖 Save</button>
+          </div>
+        </div>
+        <div class="post-card">
+          <div class="post-top">
+            <div class="post-av" style="background:linear-gradient(135deg,var(--green),#0A4A20);">OP</div>
+            <div class="post-meta"><strong>OptionsProXL</strong> · 1d ago<span class="post-ptag ptag-al">Alert</span></div>
+          </div>
+          <div class="post-title">⚡ Unusual options flow in GOOGL — 8,000 OTM call contracts</div>
+          <div class="post-preview">Massive block of OTM calls expiring next week in GOOGL. Strike $185, over 8k contracts. This kind of flow usually precedes a move. Not financial advice — watching closely and sharing with the squad.</div>
+          <div class="post-foot">
+            <button class="pact">▲ 63 Upvotes</button>
+            <button class="pact">💬 28 Comments</button>
+            <button class="pact">🔗 Share</button>
+            <button class="pact" style="margin-left:auto;">🔖 Save</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── LEADERBOARD ── -->
+      <div class="page" id="page-leaderboard">
+        <div class="pg-header">
+          <div>
+            <div class="pg-title">WARRIOR <span>LEADERBOARD</span></div>
+            <div class="pg-sub">Most active members ranked by community contributions. Resets monthly.</div>
+          </div>
+          <div style="font-size:11px;color:var(--muted);">April 2026 · Resets May 1</div>
+        </div>
+
+        <div class="card" style="padding:0;overflow:hidden;margin-bottom:20px;">
+          <table class="lb-table">
+            <thead>
+              <tr>
+                <th style="width:60px;">Rank</th>
+                <th>Warrior</th>
+                <th style="text-align:right;">Points</th>
+                <th style="text-align:right;">Posts</th>
+                <th style="text-align:right;">Badges</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><div class="lb-rank top1">1</div></td>
+                <td><div class="lb-user"><div class="lb-av" style="background:linear-gradient(135deg,var(--gold),#7A5A1A);">TM</div><div><div class="lb-name">TradingMike</div><div class="lb-sub">Options Specialist</div></div></div></td>
+                <td class="lb-pts">4,820</td>
+                <td style="text-align:right;font-size:13px;color:var(--muted);">147</td>
+                <td><div class="lb-bdg"><span class="bdg bdg-gold">Top Warrior</span><span class="bdg bdg-green">Helper</span></div></td>
+              </tr>
+              <tr>
+                <td><div class="lb-rank top2">2</div></td>
+                <td><div class="lb-user"><div class="lb-av" style="background:linear-gradient(135deg,#2980B9,#1A4A70);">SR</div><div><div class="lb-name">SarahRocks</div><div class="lb-sub">LEAP Specialist</div></div></div></td>
+                <td class="lb-pts">3,940</td>
+                <td style="text-align:right;font-size:13px;color:var(--muted);">122</td>
+                <td><div class="lb-bdg"><span class="bdg bdg-blue">Analyst</span></div></td>
+              </tr>
+              <tr>
+                <td><div class="lb-rank top3">3</div></td>
+                <td><div class="lb-user"><div class="lb-av" style="background:linear-gradient(135deg,var(--green),#0A4A20);">OP</div><div><div class="lb-name">OptionsProXL</div><div class="lb-sub">Volatility Trader</div></div></div></td>
+                <td class="lb-pts">3,210</td>
+                <td style="text-align:right;font-size:13px;color:var(--muted);">98</td>
+                <td><div class="lb-bdg"><span class="bdg bdg-green">Active</span><span class="bdg bdg-gold">Verified</span></div></td>
+              </tr>
+              <tr>
+                <td><div class="lb-rank">4</div></td>
+                <td><div class="lb-user"><div class="lb-av" style="background:linear-gradient(135deg,var(--red),#7A1010);">KW</div><div><div class="lb-name">KellyW</div><div class="lb-sub">Rising Warrior</div></div></div></td>
+                <td class="lb-pts">2,780</td>
+                <td style="text-align:right;font-size:13px;color:var(--muted);">84</td>
+                <td><div class="lb-bdg"><span class="bdg bdg-red">Rising</span></div></td>
+              </tr>
+              <tr style="background:rgba(192,57,43,0.05);">
+                <td><div class="lb-rank">5</div></td>
+                <td><div class="lb-user"><div class="lb-av" style="background:linear-gradient(135deg,#555,#222);">JD</div><div><div class="lb-name">John D. <span style="color:var(--red2);font-size:11px;">(You)</span></div><div class="lb-sub">Operator Member</div></div></div></td>
+                <td class="lb-pts">1,540</td>
+                <td style="text-align:right;font-size:13px;color:var(--muted);">46</td>
+                <td><div class="lb-bdg"><span class="bdg bdg-green">Active</span></div></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="sec-lbl">How Warriors Earn Points</div>
+        <div class="g4">
+          <div class="card" style="text-align:center;">
+            <div style="font-size:26px;margin-bottom:8px;">✍️</div>
+            <div style="font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:0.05em;margin-bottom:4px;">New Post</div>
+            <div style="font-family:'Cormorant Garamond',serif;font-size:26px;color:var(--gold);">+50 pts</div>
+          </div>
+          <div class="card" style="text-align:center;">
+            <div style="font-size:26px;margin-bottom:8px;">💬</div>
+            <div style="font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:0.05em;margin-bottom:4px;">Reply</div>
+            <div style="font-family:'Cormorant Garamond',serif;font-size:26px;color:var(--gold);">+10 pts</div>
+          </div>
+          <div class="card" style="text-align:center;">
+            <div style="font-size:26px;margin-bottom:8px;">👍</div>
+            <div style="font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:0.05em;margin-bottom:4px;">Upvote Received</div>
+            <div style="font-family:'Cormorant Garamond',serif;font-size:26px;color:var(--gold);">+5 pts</div>
+          </div>
+          <div class="card" style="text-align:center;">
+            <div style="font-size:26px;margin-bottom:8px;">📹</div>
+            <div style="font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:0.05em;margin-bottom:4px;">Watch Video</div>
+            <div style="font-family:'Cormorant Garamond',serif;font-size:26px;color:var(--gold);">+15 pts</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── PRICING ── -->
+      <div class="page" id="page-pricing">
+        <div class="pg-header">
+          <div>
+            <div class="pg-title">PLANS & <span>PRICING</span></div>
+            <div class="pg-sub">Choose your rank. Upgrade anytime. Cancel anytime.</div>
+          </div>
+        </div>
+
+        <div class="promo-hero">
+          <div class="promo-eyebrow">⚡ Founding Member Offer — Limited Spots</div>
+          <div class="promo-title">LOCK IN YOUR RATE<br>BEFORE PRICES INCREASE</div>
+          <div class="promo-sub">Founding members lock in current pricing permanently. This offer closes when the first 100 spots are filled.</div>
+        </div>
+
+        <div class="cd-row">
+          <div class="cd-blk"><div class="cd-num" id="cd-h">02</div><div class="cd-lbl">Hours</div></div>
+          <div class="cd-sep">:</div>
+          <div class="cd-blk"><div class="cd-num" id="cd-m">47</div><div class="cd-lbl">Minutes</div></div>
+          <div class="cd-sep">:</div>
+          <div class="cd-blk"><div class="cd-num" id="cd-s">33</div><div class="cd-lbl">Seconds</div></div>
+        </div>
+
+        <div class="pricing-grid">
+          <div class="price-card">
+            <div class="pc-rank">Tier 01</div>
+            <div class="pc-name">RECRUIT</div>
+            <div class="pc-price"><sup>$</sup>99<sub>/mo</sub></div>
+            <ul class="pc-feats">
+              <li><span class="ck">✓</span> Weekly Market Analysis</li>
+              <li><span class="ck">✓</span> Weekly Newsletter — Top Warrior Freedom Trades</li>
+              <li><span class="ck">✓</span> Risk-Adjusted Trade Ideas & Analysis</li>
+              <li><span class="xk">✗</span> Bi-Weekly Strategy & Live Trade Calls</li>
+              <li><span class="xk">✗</span> Small Account Live Series</li>
+              <li><span class="xk">✗</span> LEAP Opportunities</li>
+              <li><span class="xk">✗</span> 1-on-1 Coaching</li>
+            </ul>
+            <a href="#" class="pc-btn ghost" onclick="event.preventDefault();dashCheckout('recruit')">Enlist as Recruit</a>
+          </div>
+
+          <div class="price-card feat">
+            <div class="pc-popular">Most Popular</div>
+            <div class="pc-rank">Tier 02</div>
+            <div class="pc-name">OPERATOR</div>
+            <div class="pc-price"><sup>$</sup>149<sub>/mo</sub></div>
+            <ul class="pc-feats">
+              <li><span class="ck">✓</span> Everything in Recruit</li>
+              <li><span class="ck">✓</span> Bi-Weekly Strategy & Live Trade Calls</li>
+              <li><span class="ck">✓</span> Focused on Building Smaller Accounts</li>
+              <li><span class="ck">✓</span> Small Account Live Series (Bi-Weekly)</li>
+              <li><span class="ck">✓</span> LEAP Opportunities</li>
+              <li><span class="ck">✓</span> AI Signal Breakdown</li>
+              <li><span class="xk">✗</span> 1-on-1 Coaching Sessions</li>
+            </ul>
+            <a href="#" class="pc-btn" onclick="event.preventDefault();dashCheckout('operator')">Become an Operator</a>
+          </div>
+
+          <div class="price-card">
+            <div class="pc-rank">Tier 03</div>
+            <div class="pc-name">COMMANDER</div>
+            <div class="pc-price"><sup>$</sup>297<sub>/mo</sub></div>
+            <ul class="pc-feats">
+              <li><span class="ck">✓</span> Everything in Operator</li>
+              <li><span class="ck">✓</span> Bi-Weekly Strategy & Live Trade Calls</li>
+              <li><span class="ck">✓</span> 3 x 1-on-1 Coaching Sessions / Year</li>
+              <li><span class="ck">✓</span> Portfolio Review</li>
+              <li><span class="ck">✓</span> AI Tool Walkthrough</li>
+              <li><span class="ck">✓</span> Commander Badge & Priority Access</li>
+              <li><span class="ck">✓</span> Founding Member Rate — Locked In</li>
+            </ul>
+            <a href="#" class="pc-btn" onclick="event.preventDefault();dashCheckout('commander')">Command Your Future</a>
+          </div>
+        </div>
+
+        <div style="text-align:center;font-size:11px;color:rgba(240,237,232,0.2);margin-top:8px;line-height:1.8;">
+          ⚠️ Past performance is not indicative of future results. All trading involves risk. The +11% return reflects Daniel's personal results and is not guaranteed for members. This is not financial advice.
+        </div>
+      </div>
+
+    </div><!-- /content -->
+  </div><!-- /main -->
+</div><!-- /app -->
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+// ── STRIPE CHECKOUT (DASHBOARD) ───────────────────────────────
+async function dashCheckout(tier) {
+  const billing = 'monthly'; // dashboard always monthly for now
+  const email = currentUser?.email || '';
+  const userId = currentUser?.id || '';
+
+  try {
+    const res = await fetch(`${SUPABASE_URL}/functions/v1/stripe-checkout`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ tier, billing, user_email: email, user_id: userId })
+    });
+    const data = await res.json();
+    if (data.url) window.location.href = data.url;
+    else alert('Something went wrong. Please try again.');
+  } catch (err) {
+    alert('Connection error. Please try again.');
+  }
+}
+
+// ── SUPABASE CLIENT ──────────────────────────────────────────
+const SUPABASE_URL = 'https://rwlbiccsypoqwngwisvx.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ3bGJpY2NzeXBvcXduZ3dpc3Z4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYxNDA0NDEsImV4cCI6MjA5MTcxNjQ0MX0.b7tTs108R6-CbE5mpfXa-4ODVEM3Qk9dgTt22NFsnkU';
+const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+let currentUser = null;
+let currentProfile = null;
+
+// ── AUTH STATE LISTENER ──────────────────────────────────────
+supabase.auth.onAuthStateChange(async (event, session) => {
+  if (event === 'SIGNED_IN' && session) {
+    currentUser = session.user;
+    await loadProfile();
+    showApp();
+  } else if (event === 'SIGNED_OUT') {
+    currentUser = null;
+    currentProfile = null;
+    showLoginScreen();
+  }
+});
+
+// ── LOAD USER PROFILE ────────────────────────────────────────
+async function loadProfile() {
+  const { data, error } = await supabase
+    .from('profiles')
+    .select('*')
+    .eq('id', currentUser.id)
+    .single();
+
+  if (data) {
+    currentProfile = data;
+    const name = data.full_name || currentUser.email.split('@')[0];
+    const initials = name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0,2);
+    const tier = data.tier.charAt(0).toUpperCase() + data.tier.slice(1);
+
+    // Update sidebar user info
+    document.querySelectorAll('.av').forEach(el => el.textContent = initials);
+    document.querySelector('.sb-user-name').textContent = name;
+    document.querySelector('.sb-user-rank').textContent = '⚔ ' + tier;
+  }
+}
+
+// ── FORM SWITCHERS ────────────────────────────────────────────
+function showSignup(e) {
+  if (e) e.preventDefault();
+  document.getElementById('login-form').style.display = 'none';
+  document.getElementById('signup-form').style.display = 'block';
+  document.getElementById('forgot-form').style.display = 'none';
+  document.querySelector('.login-sub').textContent = 'Create Your Account';
+  clearErrors();
+}
+
+function showLogin(e) {
+  if (e) e.preventDefault();
+  document.getElementById('login-form').style.display = 'block';
+  document.getElementById('signup-form').style.display = 'none';
+  document.getElementById('forgot-form').style.display = 'none';
+  document.querySelector('.login-sub').textContent = 'Members Platform · warriorfreedom.ai';
+  clearErrors();
+}
+
+function showForgot(e) {
+  if (e) e.preventDefault();
+  document.getElementById('login-form').style.display = 'none';
+  document.getElementById('signup-form').style.display = 'none';
+  document.getElementById('forgot-form').style.display = 'block';
+  document.querySelector('.login-sub').textContent = 'Reset Your Password';
+  clearErrors();
+}
+
+function clearErrors() {
+  const existing = document.getElementById('auth-error');
+  if (existing) existing.remove();
+  const success = document.getElementById('auth-success');
+  if (success) success.remove();
+}
+
+function showAuthError(msg) {
+  clearErrors();
+  const el = document.createElement('div');
+  el.id = 'auth-error';
+  el.style.cssText = 'background:rgba(192,57,43,0.15);border:1px solid rgba(192,57,43,0.4);color:#E74C3C;font-size:13px;padding:10px 14px;margin-top:12px;line-height:1.6;';
+  el.textContent = msg;
+  document.querySelector('.login-btn').after(el);
+}
+
+function showAuthSuccess(msg) {
+  clearErrors();
+  const el = document.createElement('div');
+  el.id = 'auth-success';
+  el.style.cssText = 'background:rgba(39,174,96,0.15);border:1px solid rgba(39,174,96,0.4);color:#2ECC71;font-size:13px;padding:10px 14px;margin-top:12px;line-height:1.6;';
+  el.textContent = msg;
+  document.querySelector('.login-btn').after(el);
+}
+
+// ── SIGNUP ────────────────────────────────────────────────────
+async function doSignup() {
+  const name     = document.getElementById('su-name').value.trim();
+  const email    = document.getElementById('su-email').value.trim();
+  const password = document.getElementById('su-pass').value;
+  const confirm  = document.getElementById('su-pass2').value;
+
+  if (!name)     return showAuthError('Please enter your full name.');
+  if (!email)    return showAuthError('Please enter your email address.');
+  if (!password) return showAuthError('Please choose a password.');
+  if (password.length < 8) return showAuthError('Password must be at least 8 characters.');
+  if (password !== confirm) return showAuthError('Passwords do not match. Please try again.');
+
+  const btn = document.querySelector('#signup-form .login-btn');
+  btn.textContent = 'CREATING ACCOUNT...';
+  btn.disabled = true;
+
+  const { data, error } = await supabase.auth.signUp({
+    email,
+    password,
+    options: { data: { full_name: name } }
+  });
+
+  if (error) {
+    btn.textContent = 'CREATE MY ACCOUNT →';
+    btn.disabled = false;
+    if (error.message.includes('already registered')) {
+      return showAuthError('This email is already registered. Please sign in instead.');
+    }
+    return showAuthError(error.message);
+  }
+
+  // Success — check if email confirmation is required
+  if (data.user && !data.session) {
+    btn.textContent = 'CREATE MY ACCOUNT →';
+    btn.disabled = false;
+    showAuthSuccess('✅ Account created! Check your email for a confirmation link, then come back to sign in.');
+    setTimeout(() => showLogin(), 4000);
+  }
+  // If no email confirmation needed, onAuthStateChange handles the redirect
+}
+
+// ── FORGOT PASSWORD ───────────────────────────────────────────
+async function doForgotPassword() {
+  const email = document.getElementById('fp-email').value.trim();
+  if (!email) return showAuthError('Please enter your email address.');
+
+  const btn = document.querySelector('#forgot-form .login-btn');
+  btn.textContent = 'SENDING...';
+  btn.disabled = true;
+
+  const { error } = await supabase.auth.resetPasswordForEmail(email, {
+    redirectTo: window.location.origin + window.location.pathname + '?reset=true',
+  });
+
+  btn.textContent = 'SEND RESET LINK →';
+  btn.disabled = false;
+
+  if (error) return showAuthError(error.message);
+  showAuthSuccess('✅ Reset link sent! Check your email inbox and spam folder.');
+}
+
+// ── LOGIN ─────────────────────────────────────────────────────
+async function doLogin() {
+  const email = document.getElementById('li-email').value.trim();
+  const password = document.getElementById('li-pass').value;
+
+  if (!email || !password) {
+    showLoginError('Please enter your email and password.');
+    return;
+  }
+
+  const loginBtn = document.querySelector('.login-btn');
+  loginBtn.textContent = 'ACCESSING...';
+  loginBtn.disabled = true;
+
+  const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+
+  if (error) {
+    loginBtn.textContent = 'ACCESS THE PLATFORM →';
+    loginBtn.disabled = false;
+    showAuthError(error.message === 'Invalid login credentials'
+      ? 'Invalid email or password. Please try again.'
+      : error.message);
+    return;
+  }
+
+  // onAuthStateChange handles the rest
+}
+
+function showLoginError(msg) {
+  let el = document.getElementById('login-error');
+  if (!el) {
+    el = document.createElement('div');
+    el.id = 'login-error';
+    el.style.cssText = 'background:rgba(192,57,43,0.15);border:1px solid rgba(192,57,43,0.4);color:#E74C3C;font-size:13px;padding:10px 14px;margin-top:12px;';
+    document.querySelector('.login-btn').after(el);
+  }
+  el.textContent = msg;
+}
+
+// ── LOGOUT ────────────────────────────────────────────────────
+async function doLogout() {
+  await supabase.auth.signOut();
+  showLoginScreen();
+}
+
+// ── SHOW/HIDE ─────────────────────────────────────────────────
+function showApp() {
+  document.getElementById('login-screen').style.display = 'none';
+  const app = document.getElementById('app');
+  app.style.display = 'flex';
+  startCountdown();
+  startTicker();
+  loadDashboardData();
+}
+
+function showLoginScreen() {
+  document.getElementById('app').style.display = 'none';
+  document.getElementById('login-screen').style.display = 'flex';
+  document.getElementById('li-email').value = '';
+  document.getElementById('li-pass').value = '';
+  showLogin();
+  const err = document.getElementById('auth-error');
+  if (err) err.remove();
+}
+
+// ── LOAD LIVE DATA ────────────────────────────────────────────
+async function loadDashboardData() {
+  // Load latest newsletter preview
+  const { data: nl } = await supabase
+    .from('newsletter')
+    .select('title, summary, published_at, market_bias, spy_level, vix_level, ai_signals')
+    .eq('published', true)
+    .order('published_at', { ascending: false })
+    .limit(1)
+    .single();
+
+  if (nl) {
+    const preview = document.querySelector('.nl-preview-title');
+    const previewBody = document.querySelector('.nl-preview-body');
+    if (preview) preview.textContent = nl.title;
+    if (previewBody) previewBody.textContent = nl.summary;
+  }
+
+  // Load open trade count
+  const { count: openTrades } = await supabase
+    .from('trade_ideas')
+    .select('*', { count: 'exact', head: true })
+    .eq('status', 'open');
+
+  if (openTrades !== null) {
+    const tradeStatEl = document.querySelector('.trade-count-stat');
+    if (tradeStatEl) tradeStatEl.textContent = openTrades;
+  }
+
+  // Load leaderboard
+  const { data: lb } = await supabase
+    .from('leaderboard')
+    .select('*')
+    .limit(5);
+
+  // Load forum posts
+  const { data: posts } = await supabase
+    .from('forum_posts')
+    .select(`
+      id, title, body, tag, upvotes, created_at,
+      profiles:author_id (full_name, tier)
+    `)
+    .order('is_pinned', { ascending: false })
+    .order('created_at', { ascending: false })
+    .limit(10);
+
+  if (posts && posts.length > 0) {
+    renderForumPosts(posts);
+  }
+
+  // Load trade ideas
+  const { data: trades } = await supabase
+    .from('trade_ideas')
+    .select('*')
+    .order('created_at', { ascending: false })
+    .limit(10);
+
+  if (trades && trades.length > 0) {
+    renderTrades(trades);
+  }
+}
+
+// ── RENDER TRADES ─────────────────────────────────────────────
+function renderTrades(trades) {
+  const tbody = document.getElementById('trades-tbody');
+  if (!tbody || trades.length === 0) return;
+  tbody.innerHTML = trades.map(t => {
+    const pnl = t.pnl_amount >= 0
+      ? `<span class="pnl-pos">+$${Math.abs(t.pnl_amount).toLocaleString()}</span>`
+      : `<span class="pnl-neg">-$${Math.abs(t.pnl_amount).toLocaleString()}</span>`;
+    const typeClass = { call:'b-call', put:'b-put', leap:'b-leap' }[t.trade_type] || 'b-open';
+    const statusClass = { open:'b-open', closed:'b-closed', alert:'b-alert', watching:'b-open' }[t.status] || 'b-open';
+    return `
+      <tr>
+        <td><div class="t-ticker">${t.ticker}</div><div class="t-name">${t.company_name || ''}</div></td>
+        <td style="font-size:13px;">${t.contract}</td>
+        <td><span class="badge ${typeClass}">${t.trade_type.toUpperCase()}</span></td>
+        <td>$${t.entry_price}</td>
+        <td>${pnl}</td>
+        <td>
+          <div style="font-size:13px;font-weight:700;color:var(--gold);">${t.ai_score || '—'}%</div>
+          <div class="risk-bar"><div class="risk-fill" style="width:${t.ai_score || 0}%"></div></div>
+        </td>
+        <td><span class="badge ${statusClass}">${t.status.toUpperCase()}</span></td>
+        <td style="font-size:12px;color:var(--muted);max-width:180px;">${t.thesis || ''}</td>
+      </tr>`;
+  }).join('');
+}
+
+// ── RENDER FORUM POSTS ────────────────────────────────────────
+function renderForumPosts(posts) {
+  const container = document.getElementById('forum-posts-container');
+  if (!container || posts.length === 0) return;
+  const tagMap = { analysis:'ptag-an', question:'ptag-q', alert:'ptag-al', win:'ptag-w', discussion:'ptag-an' };
+  container.innerHTML = posts.map(p => {
+    const author = p.profiles?.full_name || 'Warrior';
+    const initials = author.split(' ').map(n=>n[0]).join('').toUpperCase().slice(0,2);
+    const timeAgo = getTimeAgo(new Date(p.created_at));
+    return `
+      <div class="post-card">
+        <div class="post-top">
+          <div class="post-av" style="background:linear-gradient(135deg,var(--red),#7A1010);">${initials}</div>
+          <div class="post-meta"><strong>${author}</strong> · ${timeAgo}${p.tag ? `<span class="post-ptag ${tagMap[p.tag]||'ptag-an'}">${p.tag}</span>` : ''}</div>
+        </div>
+        <div class="post-title">${p.title}</div>
+        <div class="post-preview">${p.body.slice(0, 200)}${p.body.length > 200 ? '...' : ''}</div>
+        <div class="post-foot">
+          <button class="pact" onclick="upvotePost('${p.id}', this)">▲ ${p.upvotes} Upvotes</button>
+          <button class="pact">💬 Comment</button>
+          <button class="pact">🔗 Share</button>
+          <button class="pact" style="margin-left:auto;">🔖 Save</button>
+        </div>
+      </div>`;
+  }).join('');
+}
+
+// ── UPVOTE POST ───────────────────────────────────────────────
+async function upvotePost(postId, btn) {
+  if (!currentUser) return;
+  const { error } = await supabase
+    .from('forum_upvotes')
+    .insert({ user_id: currentUser.id, post_id: postId });
+
+  if (!error) {
+    await supabase.rpc('award_points', {
+      p_user_id: currentUser.id, p_points: 1,
+      p_reason: 'upvote_given', p_ref_id: postId
+    });
+    const current = parseInt(btn.textContent.match(/\d+/)[0]);
+    btn.textContent = `▲ ${current + 1} Upvotes`;
+  }
+}
+
+// ── NEW FORUM POST ────────────────────────────────────────────
+async function submitPost(title, body, tag) {
+  if (!currentUser || !title || !body) return;
+  const { data, error } = await supabase
+    .from('forum_posts')
+    .insert({ author_id: currentUser.id, title, body, tag })
+    .select()
+    .single();
+  if (!error && data) {
+    await loadDashboardData();
+    nav(document.querySelector('[onclick*=forum]'), 'forum');
+  }
+}
+
+// ── UTILITY ───────────────────────────────────────────────────
+function getTimeAgo(date) {
+  const secs = Math.floor((new Date() - date) / 1000);
+  if (secs < 60) return 'just now';
+  if (secs < 3600) return Math.floor(secs/60) + 'm ago';
+  if (secs < 86400) return Math.floor(secs/3600) + 'h ago';
+  return Math.floor(secs/86400) + 'd ago';
+}
+
+// ── NAV ───────────────────────────────────────────────────────
+const pageTitles = {
+  dashboard: 'DASHBOARD', newsletter: 'MARKET NEWSLETTER',
+  trades: 'TRADE IDEAS', risk: 'RISK MANAGEMENT',
+  leaps: 'LEAP OPPORTUNITIES', live: 'LIVE TRADING',
+  videos: 'TEACHING VIDEOS', forum: 'COMMUNITY FORUM',
+  leaderboard: 'LEADERBOARD', pricing: 'PLANS & PRICING'
+};
+function nav(el, page) {
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  if (el) el.classList.add('active');
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  const pg = document.getElementById('page-' + page);
+  if (pg) pg.classList.add('active');
+  document.getElementById('tb-title').textContent = pageTitles[page] || page.toUpperCase();
+  document.querySelector('.content').scrollTop = 0;
+}
+
+// ── FILTER BUTTONS ─────────────────────────────────────────────
+document.querySelectorAll('.filter-row').forEach(row => {
+  row.querySelectorAll('.flt').forEach(btn => {
+    btn.addEventListener('click', function() {
+      row.querySelectorAll('.flt').forEach(b => b.classList.remove('active'));
+      this.classList.add('active');
+    });
+  });
+});
+
+// ── COUNTDOWN ─────────────────────────────────────────────────
+function startCountdown() {
+  let t = 2*3600 + 47*60 + 33;
+  const tick = () => {
+    if (t <= 0) return; t--;
+    const hEl = document.getElementById('cd-h');
+    const mEl = document.getElementById('cd-m');
+    const sEl = document.getElementById('cd-s');
+    if (hEl) hEl.textContent = String(Math.floor(t/3600)).padStart(2,'0');
+    if (mEl) mEl.textContent = String(Math.floor((t%3600)/60)).padStart(2,'0');
+    if (sEl) sEl.textContent = String(t%60).padStart(2,'0');
+  };
+  setInterval(tick, 1000);
+}
+
+// ── LIVE TICKER ────────────────────────────────────────────────
+const tks = [
+  {sym:'SPY',v:527.34},{sym:'QQQ',v:441.20},
+  {sym:'VIX',v:18.42},{sym:'NVDA',v:884.12}
+];
+function startTicker() {
+  setInterval(() => {
+    const bar = document.getElementById('live-ticker');
+    if (!bar) return;
+    bar.innerHTML = tks.map(t => {
+      const d = (Math.random()-0.49)*0.9;
+      t.v = Math.max(1, t.v+d);
+      const up = d >= 0;
+      return `<div class="tick"><span class="tick-sym">${t.sym}</span><span class="${up?'tick-up':'tick-dn'}">${up?'▲':'▼'} ${t.v.toFixed(2)}</span></div>`;
+    }).join('');
+  }, 3000);
+}
+
+// ── ENTER KEY ON LOGIN ─────────────────────────────────────────
+document.addEventListener('keydown', e => {
+  if (e.key === 'Enter' && document.getElementById('login-screen').style.display !== 'none') doLogin();
+});
+
+// ── CHECK EXISTING SESSION ON PAGE LOAD ───────────────────────
+(async () => {
+  const { data: { session } } = await supabase.auth.getSession();
+  if (session) {
+    currentUser = session.user;
+    await loadProfile();
+    showApp();
+  }
+})();</script>
+</body>
+</html>

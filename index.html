@@ -1,0 +1,1282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Warrior Freedom AI — Trade With Discipline. Live Free.</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400;1,600&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<style>
+:root {
+  --black:   #080A10;
+  --navy:    #0C0F1E;
+  --surface: #111428;
+  --card:    #161930;
+  --red:     #C0392B;
+  --red2:    #E74C3C;
+  --gold:    #C9A84C;
+  --gold2:   #E2C16A;
+  --text:    #F5F2ED;
+  --muted:   rgba(240,237,232,0.68);
+  --border:  rgba(240,237,232,0.09);
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  background: var(--black);
+  color: var(--text);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 16px;
+  line-height: 1.7;
+  overflow-x: hidden;
+}
+
+::-webkit-scrollbar { width: 3px; }
+::-webkit-scrollbar-track { background: var(--black); }
+::-webkit-scrollbar-thumb { background: var(--red); }
+
+/* ── NAV ── */
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 20px 64px;
+  background: rgba(8,10,16,0.82);
+  backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--border);
+}
+
+.nav-logo {
+  display: flex; align-items: center; gap: 12px;
+  text-decoration: none;
+}
+
+.logo-mark {
+  width: 36px; height: 36px;
+  background: var(--red);
+  display: flex; align-items: center; justify-content: center;
+  position: relative;
+  clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+}
+
+.logo-mark span {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 18px;
+  color: #fff;
+  letter-spacing: 0.02em;
+}
+
+.logo-text {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 22px;
+  letter-spacing: 0.1em;
+  color: var(--text);
+  line-height: 1;
+}
+
+.logo-text span { color: var(--gold); }
+
+.nav-links { display: flex; gap: 36px; list-style: none; }
+.nav-links a {
+  font-size: 12px; font-weight: 600;
+  letter-spacing: 0.14em; text-transform: uppercase;
+  color: rgba(240,237,232,0.72); text-decoration: none;
+  transition: color 0.2s;
+}
+.nav-links a:hover { color: var(--gold); }
+
+.nav-cta {
+  background: var(--red);
+  color: #fff !important;
+  padding: 10px 24px !important;
+  font-size: 11px !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.14em !important;
+  text-transform: uppercase !important;
+  text-decoration: none;
+  transition: background 0.2s, transform 0.15s !important;
+  display: inline-block;
+}
+.nav-cta:hover { background: var(--red2) !important; transform: translateY(-1px); }
+
+/* ── HERO ── */
+.hero {
+  min-height: 100vh;
+  display: flex; flex-direction: column; justify-content: flex-end;
+  padding: 0 64px 80px;
+  position: relative; overflow: hidden;
+}
+
+/* animated grid */
+.hero-grid {
+  position: absolute; inset: 0;
+  background-image:
+    linear-gradient(rgba(192,57,43,0.06) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(192,57,43,0.06) 1px, transparent 1px);
+  background-size: 60px 60px;
+  animation: grid-shift 20s linear infinite;
+  pointer-events: none;
+}
+@keyframes grid-shift {
+  from { background-position: 0 0; }
+  to   { background-position: 60px 60px; }
+}
+
+.hero-glow {
+  position: absolute; inset: 0;
+  background:
+    radial-gradient(ellipse 70% 50% at 50% 100%, rgba(192,57,43,0.14) 0%, transparent 70%),
+    radial-gradient(ellipse 40% 30% at 80% 20%, rgba(201,168,76,0.06) 0%, transparent 60%);
+  pointer-events: none;
+}
+
+.hero-watermark {
+  position: absolute;
+  right: -40px; top: 50%;
+  transform: translateY(-50%);
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(160px, 28vw, 420px);
+  letter-spacing: 0.05em;
+  color: transparent;
+  -webkit-text-stroke: 1px rgba(192,57,43,0.08);
+  line-height: 1;
+  pointer-events: none;
+  user-select: none;
+  white-space: nowrap;
+}
+
+.hero-eyebrow {
+  font-size: 11px; font-weight: 600;
+  letter-spacing: 0.28em; text-transform: uppercase;
+  color: var(--red2);
+  margin-bottom: 24px;
+  display: flex; align-items: center; gap: 14px;
+  animation: fadeUp 0.8s ease both;
+}
+.hero-eyebrow::before {
+  content: '';
+  width: 40px; height: 1px;
+  background: var(--red);
+}
+
+.hero-headline {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(64px, 11vw, 160px);
+  letter-spacing: 0.04em;
+  line-height: 0.92;
+  color: var(--text);
+  animation: fadeUp 0.9s 0.08s ease both;
+}
+
+.hero-headline .line-red { color: var(--red); display: block; }
+.hero-headline .line-gold {
+  color: transparent;
+  -webkit-text-stroke: 1px var(--gold);
+  display: block;
+}
+
+.hero-sub {
+  margin-top: 32px;
+  max-width: 520px;
+  font-size: 17px;
+  line-height: 1.85;
+  color: rgba(240,237,232,0.78);
+  font-weight: 400;
+  animation: fadeUp 1s 0.16s ease both;
+}
+
+.hero-cta-row {
+  display: flex; align-items: center; gap: 24px;
+  margin-top: 44px;
+  animation: fadeUp 1s 0.24s ease both;
+}
+
+.btn-primary {
+  display: inline-flex; align-items: center; gap: 10px;
+  background: var(--red);
+  color: #fff;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 12px; font-weight: 700;
+  letter-spacing: 0.16em; text-transform: uppercase;
+  padding: 16px 36px;
+  text-decoration: none;
+  transition: background 0.2s, transform 0.15s;
+  position: relative; overflow: hidden;
+}
+.btn-primary::after {
+  content: '';
+  position: absolute; inset: 0;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.08), transparent);
+  transform: translateX(-100%);
+  transition: transform 0.5s;
+}
+.btn-primary:hover::after { transform: translateX(100%); }
+.btn-primary:hover { background: var(--red2); transform: translateY(-2px); }
+
+.btn-ghost {
+  font-size: 12px; font-weight: 600;
+  letter-spacing: 0.14em; text-transform: uppercase;
+  color: var(--muted); text-decoration: none;
+  border-bottom: 1px solid rgba(240,237,232,0.2);
+  padding-bottom: 3px;
+  transition: color 0.2s, border-color 0.2s;
+}
+.btn-ghost:hover { color: var(--gold); border-color: var(--gold); }
+
+.hero-stats {
+  position: absolute; right: 64px; bottom: 80px;
+  display: flex; flex-direction: column; gap: 28px;
+  animation: fadeUp 1.1s 0.35s ease both;
+}
+
+.hero-stat-item { text-align: right; }
+.hero-stat-val {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 38px; font-weight: 300;
+  color: var(--gold); line-height: 1;
+  letter-spacing: -0.01em;
+}
+.hero-stat-lbl {
+  font-size: 10px; font-weight: 600;
+  letter-spacing: 0.18em; text-transform: uppercase;
+  color: var(--muted); margin-top: 4px;
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(28px); }
+  to   { opacity: 1; transform: none; }
+}
+
+/* ── MISSION BAND ── */
+.mission-band {
+  background: var(--red);
+  padding: 20px 64px;
+  display: flex; align-items: center; gap: 0;
+  overflow: hidden;
+  position: relative;
+}
+
+.mission-scroll {
+  display: flex; gap: 64px; align-items: center;
+  animation: scroll-left 24s linear infinite;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.mission-item {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 18px; letter-spacing: 0.2em;
+  color: rgba(255,255,255,0.9);
+  display: flex; align-items: center; gap: 24px;
+}
+.mission-sep { color: rgba(255,255,255,0.3); font-size: 8px; }
+
+@keyframes scroll-left {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+
+/* ── SECTIONS ── */
+section { padding: 120px 64px; position: relative; }
+
+.section-eyebrow {
+  font-size: 10px; font-weight: 700;
+  letter-spacing: 0.28em; text-transform: uppercase;
+  color: var(--red2);
+  display: flex; align-items: center; gap: 14px;
+  margin-bottom: 20px;
+}
+.section-eyebrow::before {
+  content: ''; width: 32px; height: 1px; background: var(--red);
+}
+
+.section-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(42px, 6vw, 80px);
+  letter-spacing: 0.05em;
+  line-height: 0.95;
+  color: var(--text);
+}
+.section-title span { color: var(--gold); }
+
+/* ── STORY ── */
+.story { background: var(--navy); }
+
+.story-grid {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 80px; align-items: center;
+  margin-top: 64px;
+}
+
+.story-left {}
+
+.story-body {
+  font-size: 16px; line-height: 2;
+  color: rgba(240,237,232,0.75);
+  margin-top: 32px;
+}
+.story-body p + p { margin-top: 18px; }
+.story-body strong { color: var(--text); font-weight: 600; }
+
+.story-tags {
+  display: flex; flex-wrap: wrap; gap: 10px;
+  margin-top: 32px;
+}
+.story-tag {
+  font-size: 10px; font-weight: 700;
+  letter-spacing: 0.14em; text-transform: uppercase;
+  padding: 8px 16px;
+  border: 1px solid rgba(192,57,43,0.4);
+  color: var(--red2);
+}
+
+.story-right {
+  position: relative;
+}
+
+.story-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--red);
+  padding: 40px;
+}
+
+.story-card-quote {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 26px; font-weight: 400; font-style: italic;
+  line-height: 1.55;
+  color: var(--text);
+}
+
+.story-card-attr {
+  margin-top: 24px;
+  font-size: 11px; font-weight: 700;
+  letter-spacing: 0.18em; text-transform: uppercase;
+  color: var(--gold);
+}
+
+.timeline {
+  margin-top: 40px;
+  display: flex; flex-direction: column;
+  gap: 0;
+}
+
+.timeline-item {
+  display: flex; gap: 20px;
+  padding: 18px 0;
+  border-bottom: 1px solid var(--border);
+}
+.timeline-item:first-child { padding-top: 0; }
+.timeline-item:last-child { border-bottom: none; padding-bottom: 0; }
+
+.tl-dot {
+  width: 10px; height: 10px;
+  border-radius: 50%;
+  background: var(--red);
+  margin-top: 5px; flex-shrink: 0;
+}
+.tl-year {
+  font-size: 11px; font-weight: 700;
+  letter-spacing: 0.1em;
+  color: var(--gold); min-width: 40px;
+  margin-top: 3px;
+}
+.tl-text {
+  font-size: 14px; line-height: 1.7;
+  color: rgba(240,237,232,0.75);
+}
+.tl-text strong { color: var(--text); }
+
+/* ── AI EDGE ── */
+.ai-edge { background: var(--black); }
+
+.ai-edge-intro {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 80px; margin-top: 64px; align-items: start;
+}
+
+.ai-desc {
+  font-size: 16px; line-height: 1.95;
+  color: rgba(240,237,232,0.75);
+}
+
+.ai-features {
+  display: flex; flex-direction: column; gap: 0;
+}
+
+.ai-feature {
+  display: flex; gap: 20px; align-items: flex-start;
+  padding: 22px 0;
+  border-bottom: 1px solid var(--border);
+  transition: background 0.2s;
+}
+.ai-feature:first-child { border-top: 1px solid var(--border); }
+
+.ai-feature-num {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 32px; color: rgba(192,57,43,0.25);
+  line-height: 1; min-width: 44px;
+  transition: color 0.2s;
+}
+.ai-feature:hover .ai-feature-num { color: var(--red); }
+
+.ai-feature-title {
+  font-size: 14px; font-weight: 600;
+  color: var(--text); margin-bottom: 6px;
+  letter-spacing: 0.02em;
+}
+.ai-feature-desc {
+  font-size: 13px; line-height: 1.7;
+  color: var(--muted);
+}
+
+/* performance cards */
+.perf-cards {
+  display: grid; grid-template-columns: repeat(3,1fr);
+  gap: 2px; margin-top: 80px;
+}
+
+.perf-card {
+  background: var(--surface);
+  padding: 44px 36px;
+  border-top: 2px solid transparent;
+  transition: border-color 0.3s, transform 0.3s;
+  position: relative; overflow: hidden;
+}
+.perf-card:hover { border-top-color: var(--red); transform: translateY(-4px); }
+
+.perf-card::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: radial-gradient(ellipse 60% 40% at 50% 100%, rgba(192,57,43,0.05), transparent);
+  opacity: 0; transition: opacity 0.3s;
+}
+.perf-card:hover::before { opacity: 1; }
+
+.perf-val {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 64px; letter-spacing: 0.03em;
+  line-height: 1; color: var(--gold);
+}
+.perf-metric {
+  font-size: 11px; font-weight: 700;
+  letter-spacing: 0.18em; text-transform: uppercase;
+  color: var(--muted); margin-top: 12px;
+}
+.perf-desc {
+  font-size: 14px; color: rgba(240,237,232,0.65);
+  margin-top: 8px; line-height: 1.75;
+}
+
+/* ── WHAT YOU GET ── */
+.offerings { background: var(--navy); }
+
+.offerings-grid {
+  display: grid; grid-template-columns: repeat(3,1fr);
+  gap: 2px; margin-top: 64px;
+}
+
+.offering-card {
+  background: var(--card);
+  padding: 36px 32px;
+  position: relative;
+  transition: background 0.2s;
+}
+.offering-card:hover { background: #1C2040; }
+
+.offering-icon {
+  font-size: 28px; margin-bottom: 20px;
+  display: block;
+}
+
+.offering-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 22px; letter-spacing: 0.06em;
+  color: var(--text); margin-bottom: 12px;
+}
+
+.offering-desc {
+  font-size: 14px; line-height: 1.8;
+  color: rgba(240,237,232,0.72);
+}
+
+.offering-tag {
+  display: inline-block; margin-top: 20px;
+  font-size: 9px; font-weight: 700;
+  letter-spacing: 0.16em; text-transform: uppercase;
+  padding: 4px 12px;
+  background: rgba(192,57,43,0.12);
+  color: var(--red2);
+}
+
+/* ── TIERS ── */
+.tiers { background: var(--black); }
+
+.tiers-grid {
+  display: grid; grid-template-columns: repeat(3,1fr);
+  gap: 2px; margin-top: 64px;
+}
+
+.tier-card {
+  background: var(--surface);
+  padding: 44px 36px;
+  position: relative;
+  transition: transform 0.3s;
+}
+.tier-card:hover { transform: translateY(-6px); }
+
+.tier-card.featured {
+  background: linear-gradient(180deg, rgba(192,57,43,0.12) 0%, var(--surface) 60%);
+  border-top: 2px solid var(--red);
+}
+
+.tier-label-top {
+  position: absolute; top: -1px; left: 50%;
+  transform: translateX(-50%);
+  background: var(--red);
+  color: #fff;
+  font-size: 9px; font-weight: 800;
+  letter-spacing: 0.18em; text-transform: uppercase;
+  padding: 4px 18px;
+  white-space: nowrap;
+}
+
+.tier-rank {
+  font-size: 10px; font-weight: 700;
+  letter-spacing: 0.22em; text-transform: uppercase;
+  color: var(--red2); margin-bottom: 16px;
+}
+
+.tier-name {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 40px; letter-spacing: 0.06em;
+  color: var(--text); line-height: 1;
+  margin-bottom: 4px;
+}
+
+.tier-price {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 52px; font-weight: 300;
+  color: var(--gold); line-height: 1;
+  margin: 20px 0;
+}
+.tier-price sup { font-size: 22px; vertical-align: super; }
+.tier-price sub { font-size: 16px; color: var(--muted); }
+
+.tier-features {
+  list-style: none;
+  margin: 24px 0; display: flex; flex-direction: column; gap: 12px;
+}
+.tier-features li {
+  font-size: 14px; color: rgba(240,237,232,0.78);
+  display: flex; gap: 10px; align-items: flex-start;
+}
+.chk { color: var(--gold); }
+.xmk { color: rgba(240,237,232,0.15); }
+
+.tier-btn {
+  display: block; width: 100%;
+  background: var(--red);
+  color: #fff;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 11px; font-weight: 800;
+  letter-spacing: 0.18em; text-transform: uppercase;
+  padding: 15px; border: none; cursor: pointer;
+  text-align: center; text-decoration: none;
+  transition: background 0.2s, transform 0.15s;
+}
+.tier-btn:hover { background: var(--red2); transform: translateY(-1px); }
+.tier-btn.ghost {
+  background: none;
+  border: 1px solid var(--border);
+  color: var(--muted);
+}
+.tier-btn.ghost:hover { border-color: var(--gold); color: var(--gold); background: rgba(201,168,76,0.06); }
+
+/* ── CTA BAND ── */
+.cta-band {
+  background: var(--red);
+  padding: 80px 64px;
+  text-align: center;
+  position: relative; overflow: hidden;
+}
+.cta-band::before {
+  content: 'FREEDOM';
+  position: absolute;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 280px;
+  color: rgba(0,0,0,0.1);
+  letter-spacing: 0.05em;
+  top: 50%; left: 50%;
+  transform: translate(-50%,-50%);
+  pointer-events: none;
+  white-space: nowrap;
+}
+
+.cta-band-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(42px, 7vw, 88px);
+  letter-spacing: 0.05em;
+  line-height: 1;
+  color: #fff;
+  position: relative; z-index: 1;
+}
+
+.cta-band-sub {
+  font-size: 17px; color: rgba(255,255,255,0.85);
+  margin: 20px auto 40px;
+  max-width: 500px; line-height: 1.8;
+  position: relative; z-index: 1;
+}
+
+.btn-white {
+  display: inline-block;
+  background: #fff;
+  color: var(--red);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 12px; font-weight: 800;
+  letter-spacing: 0.18em; text-transform: uppercase;
+  padding: 18px 48px;
+  text-decoration: none;
+  transition: transform 0.2s, box-shadow 0.2s;
+  position: relative; z-index: 1;
+}
+.btn-white:hover { transform: translateY(-2px); box-shadow: 0 12px 40px rgba(0,0,0,0.3); }
+
+/* ── FOOTER ── */
+footer {
+  background: var(--black);
+  border-top: 1px solid var(--border);
+  padding: 48px 64px;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: 32px;
+}
+
+.footer-brand {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 20px; letter-spacing: 0.1em;
+  color: var(--muted);
+}
+.footer-brand span { color: var(--gold); }
+
+.footer-links {
+  display: flex; gap: 32px; list-style: none;
+}
+.footer-links a {
+  font-size: 11px; font-weight: 600;
+  letter-spacing: 0.12em; text-transform: uppercase;
+  color: rgba(240,237,232,0.25); text-decoration: none;
+  transition: color 0.2s;
+}
+.footer-links a:hover { color: var(--gold); }
+
+.footer-copy {
+  font-size: 11px; color: rgba(240,237,232,0.18);
+  text-align: right; line-height: 1.6;
+}
+
+/* ── SCROLL REVEAL ── */
+.reveal { opacity: 0; transform: translateY(32px); transition: opacity 0.7s ease, transform 0.7s ease; }
+.reveal.visible { opacity: 1; transform: none; }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 960px) {
+  nav { padding: 16px 24px; }
+  .nav-links { display: none; }
+  .hero { padding: 0 24px 60px; }
+  section { padding: 80px 24px; }
+  .story-grid, .ai-edge-intro { grid-template-columns: 1fr; gap: 48px; }
+  .perf-cards, .offerings-grid, .tiers-grid { grid-template-columns: 1fr; }
+  .hero-stats { display: none; }
+  footer { grid-template-columns: 1fr; text-align: center; }
+  .footer-copy { text-align: center; }
+  .footer-links { justify-content: center; }
+  .mission-band { padding: 18px 24px; }
+  .cta-band { padding: 64px 24px; }
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a class="nav-logo" href="#">
+    <div class="logo-mark"><span>WF</span></div>
+    <div class="logo-text">WARRIOR<span>FREEDOM</span><br><span style="font-size:11px;letter-spacing:0.22em;color:var(--muted);">.AI</span></div>
+  </a>
+  <ul class="nav-links">
+    <li><a href="#story">Our Story</a></li>
+    <li><a href="#edge">The AI Edge</a></li>
+    <li><a href="#offerings">What You Get</a></li>
+    <li><a href="#tiers">Pricing</a></li>
+    <li><a href="#" class="nav-cta">Join Now</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-grid"></div>
+  <div class="hero-glow"></div>
+  <div class="hero-watermark">WARRIOR</div>
+
+  <div class="hero-eyebrow">AI-Powered Options Trading</div>
+
+  <h1 class="hero-headline">
+    Trade With<br>
+    <span class="line-red">Discipline.</span>
+    <span class="line-gold">Live Free.</span>
+  </h1>
+
+  <p class="hero-sub">
+    Warrior Freedom AI is a battle-tested options trading platform built by a veteran — powered by a proprietary AI engine that delivers consistent, compounding returns month after month.
+  </p>
+
+  <div class="hero-cta-row">
+    <a href="#tiers" class="btn-primary">Join the Mission →</a>
+    <a href="#story" class="btn-ghost">Our Story</a>
+  </div>
+
+  <div class="hero-stats">
+    <div class="hero-stat-item">
+      <div class="hero-stat-val">+11%</div>
+      <div class="hero-stat-lbl">Avg. Monthly Return</div>
+    </div>
+    <div class="hero-stat-item">
+      <div class="hero-stat-val">AI</div>
+      <div class="hero-stat-lbl">Proprietary Signal Engine</div>
+    </div>
+    <div class="hero-stat-item">
+      <div class="hero-stat-val">3</div>
+      <div class="hero-stat-lbl">Membership Tiers</div>
+    </div>
+  </div>
+</section>
+
+<!-- MISSION BAND -->
+<div class="mission-band">
+  <div class="mission-scroll">
+    <div class="mission-item">DISCIPLINE <span class="mission-sep">◆</span></div>
+    <div class="mission-item">PRECISION <span class="mission-sep">◆</span></div>
+    <div class="mission-item">AI-POWERED EDGE <span class="mission-sep">◆</span></div>
+    <div class="mission-item">CONSISTENT RETURNS <span class="mission-sep">◆</span></div>
+    <div class="mission-item">FINANCIAL FREEDOM <span class="mission-sep">◆</span></div>
+    <div class="mission-item">WARRIOR MINDSET <span class="mission-sep">◆</span></div>
+    <div class="mission-item">OPTIONS MASTERY <span class="mission-sep">◆</span></div>
+    <div class="mission-item">DISCIPLINE <span class="mission-sep">◆</span></div>
+    <div class="mission-item">PRECISION <span class="mission-sep">◆</span></div>
+    <div class="mission-item">AI-POWERED EDGE <span class="mission-sep">◆</span></div>
+    <div class="mission-item">CONSISTENT RETURNS <span class="mission-sep">◆</span></div>
+    <div class="mission-item">FINANCIAL FREEDOM <span class="mission-sep">◆</span></div>
+    <div class="mission-item">WARRIOR MINDSET <span class="mission-sep">◆</span></div>
+    <div class="mission-item">OPTIONS MASTERY <span class="mission-sep">◆</span></div>
+  </div>
+</div>
+
+<!-- STORY -->
+<section class="story reveal" id="story">
+  <div class="section-eyebrow">The Origin</div>
+  <h2 class="section-title">FORGED IN <span>SERVICE.</span><br>SHARPENED IN <span>THE MARKET.</span></h2>
+
+  <div class="story-grid">
+    <div class="story-left">
+      <div class="story-body">
+        <p>
+          <strong>Warrior Freedom wasn't built in a boardroom.</strong> It was forged through Combat Support Operations — where every decision carried weight, every system had to work, and discipline was the only currency that mattered.
+        </p>
+        <p>
+          When I entered the markets, I helped lead an <strong>earnings-for-growth trading strategy</strong> — applying the same precision and structure from military life to identifying high-probability opportunities around earnings catalysts.
+        </p>
+        <p>
+          From that experience, I built something more powerful: a <strong>proprietary earnings-for-growth investment framework</strong>, purpose-built and optimized for smaller accounts. The same edge institutional traders have — engineered for the individual.
+        </p>
+        <p>
+          Now I'm opening my own personal mission. <strong>Sharing my complete playbook</strong> — the model, the AI research, the framework — with members who are serious about growing their accounts the right way.
+        </p>
+      </div>
+      <div class="story-tags">
+        <span class="story-tag">Combat Support Veteran</span>
+        <span class="story-tag">Earnings-for-Growth</span>
+        <span class="story-tag">AI Framework Builder</span>
+        <span class="story-tag">Small Account Specialist</span>
+      </div>
+    </div>
+
+    <div class="story-right">
+      <div class="story-card">
+        <div class="story-card-quote">
+          "I flew combat missions in Iraq. When I got home, I applied the same discipline — the same systems thinking — to the markets. The AI I built is just that discipline, encoded."
+        </div>
+        <div class="story-card-attr">— Daniel, Founder · Warrior Freedom AI</div>
+      </div>
+
+      <div class="timeline">
+        <div class="timeline-item">
+          <div class="tl-dot"></div>
+          <div class="tl-year">SVC</div>
+          <div class="tl-text"><strong>Combat Support Operations</strong> — High-stakes missions requiring precision, systems thinking, and zero margin for error under fire.</div>
+        </div>
+        <div class="timeline-item">
+          <div class="tl-dot"></div>
+          <div class="tl-year">MKT</div>
+          <div class="tl-text"><strong>Entered the Markets</strong> — Helped lead an earnings-for-growth trading strategy, applying military discipline to systematic market execution.</div>
+        </div>
+        <div class="timeline-item">
+          <div class="tl-dot"></div>
+          <div class="tl-year">AI</div>
+          <div class="tl-text"><strong>Built the Framework</strong> — Developed a proprietary earnings-for-growth investment framework, purpose-built and optimized for smaller accounts.</div>
+        </div>
+        <div class="timeline-item">
+          <div class="tl-dot"></div>
+          <div class="tl-year">NOW</div>
+          <div class="tl-text"><strong>Warrior Freedom AI</strong> — Opening my own personal mission. Sharing my complete playbook — the model, the research, and the framework — with members ready to grow.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- AI EDGE -->
+<section class="ai-edge reveal" id="edge">
+  <div class="section-eyebrow">The Technology</div>
+  <h2 class="section-title">AN AI BUILT FOR<br><span>ONE MISSION.</span></h2>
+
+  <div class="ai-edge-intro">
+    <div>
+      <div class="ai-desc">
+        <p>Most traders react to the market. The Warrior Freedom AI anticipates it.</p>
+        <br>
+        <p>I spent years building and refining a signal engine that analyzes options flow, implied volatility skew, market microstructure, and macro conditions in real time — surfacing high-probability setups before they become obvious to everyone else.</p>
+        <br>
+        <p>Every trade is governed by data, probability, and a risk framework the system enforces. Emotion is removed. Process remains. That's the warrior way.</p>
+      </div>
+    </div>
+
+    <div class="ai-features">
+      <div class="ai-feature">
+        <div class="ai-feature-num">01</div>
+        <div>
+          <div class="ai-feature-title">Options Flow Intelligence</div>
+          <div class="ai-feature-desc">Real-time scanning of unusual activity and dark pool signals to identify institutional positioning before the move.</div>
+        </div>
+      </div>
+      <div class="ai-feature">
+        <div class="ai-feature-num">02</div>
+        <div>
+          <div class="ai-feature-title">Volatility Architecture</div>
+          <div class="ai-feature-desc">Dynamic IV skew modeling and term structure analysis to optimize entry timing and strike selection on every trade.</div>
+        </div>
+      </div>
+      <div class="ai-feature">
+        <div class="ai-feature-num">03</div>
+        <div>
+          <div class="ai-feature-title">Risk-Calibrated Sizing</div>
+          <div class="ai-feature-desc">Position sizing driven by probability of profit, max drawdown parameters, and Kelly-informed capital allocation.</div>
+        </div>
+      </div>
+      <div class="ai-feature">
+        <div class="ai-feature-num">04</div>
+        <div>
+          <div class="ai-feature-title">Adaptive Learning</div>
+          <div class="ai-feature-desc">The model refines itself from every trade — improving signal quality and adapting to regime changes in real time.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="perf-cards">
+    <div class="perf-card">
+      <div class="perf-val">+11%</div>
+      <div class="perf-metric">My Personal Monthly Return</div>
+      <div class="perf-desc">My own average monthly rate of return, generated using the Warrior Freedom AI signal engine on my personal trading account.</div>
+    </div>
+    <div class="perf-card">
+      <div class="perf-val">AI</div>
+      <div class="perf-metric">Proprietary Signal Engine</div>
+      <div class="perf-desc">Every trade guided by a custom-built AI — options flow, volatility intelligence, and risk-calibrated sizing working together.</div>
+    </div>
+    <div class="perf-card">
+      <div class="perf-val">ZERO</div>
+      <div class="perf-metric">Guesswork</div>
+      <div class="perf-desc">Every decision is backed by data, probability models, and a disciplined risk framework. No emotion. No improvisation.</div>
+    </div>
+  </div>
+  <div style="margin-top:20px;font-size:11px;color:rgba(240,237,232,0.22);line-height:1.7;border-top:1px solid var(--border);padding-top:16px;">
+    ⚠️ The return figures above reflect Daniel's personal trading results and are not a guarantee of future performance. Individual results will vary. All trading involves substantial risk of loss. Past performance is not indicative of future results. This is not financial advice.
+  </div>
+</section>
+
+<!-- OFFERINGS -->
+<section class="offerings reveal" id="offerings">
+  <div class="section-eyebrow">The Platform</div>
+  <h2 class="section-title">EVERYTHING YOU NEED<br>TO <span>TRADE LIKE A WARRIOR.</span></h2>
+
+  <div class="offerings-grid">
+    <div class="offering-card">
+      <span class="offering-icon">📰</span>
+      <div class="offering-title">DAILY NEWSLETTER</div>
+      <div class="offering-desc">Live daily market intelligence — key levels, bias, volatility readings, and AI-flagged opportunities delivered every morning before the open.</div>
+      <span class="offering-tag">All Members</span>
+    </div>
+    <div class="offering-card">
+      <span class="offering-icon">📊</span>
+      <div class="offering-title">RISK-ADJUSTED TRADE IDEAS</div>
+      <div class="offering-desc">Every trade idea Daniel takes — with full analysis, AI score, entry, stop, and thesis. Sized and calibrated for real accounts of all sizes.</div>
+      <span class="offering-tag">All Members</span>
+    </div>
+    <div class="offering-card">
+      <span class="offering-icon">🚀</span>
+      <div class="offering-title">LEAP OPPORTUNITIES</div>
+      <div class="offering-desc">Long-dated, high-conviction setups scored by the AI engine. Full thesis, confidence rating, and target return on every play.</div>
+      <span class="offering-tag">Operator+</span>
+    </div>
+    <div class="offering-card">
+      <span class="offering-icon">📈</span>
+      <div class="offering-title">SMALL ACCOUNT LIVE SERIES</div>
+      <div class="offering-desc">Daniel's personal account — live on camera bi-weekly. Watch real capital deployed using the AI research in real time, with live Q&A every session.</div>
+      <span class="offering-tag">Operator+</span>
+    </div>
+    <div class="offering-card">
+      <span class="offering-icon">🔴</span>
+      <div class="offering-title">LIVE TRADING SESSIONS</div>
+      <div class="offering-desc">Watch Daniel trade live. Real positions, real AI signals, real-time commentary. Full replays available after every session.</div>
+      <span class="offering-tag">Operator+</span>
+    </div>
+    <div class="offering-card">
+      <span class="offering-icon">🎖</span>
+      <div class="offering-title">1-ON-1 COACHING</div>
+      <div class="offering-desc">Three private coaching sessions per year with Daniel. Portfolio review, AI tool walkthrough, and a strategy built for your specific account and goals.</div>
+      <span class="offering-tag">Commander</span>
+    </div>
+  </div>
+</section>
+
+<!-- STRATEGY -->
+<section class="reveal" id="strategy" style="background:var(--black);">
+  <div class="section-eyebrow">Market Intelligence</div>
+  <h2 class="section-title">A DISCIPLINED <span>STRATEGY.</span><br>NOT NOISE.</h2>
+
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:80px;margin-top:64px;align-items:start;">
+    <div>
+      <div style="font-size:16px;line-height:1.95;color:rgba(240,237,232,0.75);">
+        <p>Most trading content is noise. Signals without context. Alerts without education. Warrior Freedom AI is built on a completely different philosophy — <strong style="color:var(--text);">you understand every trade before you take it.</strong></p>
+        <br>
+        <p>The strategy is rooted in my earnings-for-growth approach: identifying companies with strong fundamental catalysts, timing entries using AI-driven options flow analysis, and sizing positions using a disciplined risk framework built for accounts of all sizes.</p>
+        <br>
+        <p>Every insight I publish — every newsletter, every trade idea, every live session — is part of a coherent, repeatable system. Not a hot tip. A <strong style="color:var(--text);">process you can learn, trust, and apply yourself.</strong></p>
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:2px;">
+      <div style="background:var(--surface);padding:28px 32px;border-left:3px solid var(--red);">
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:0.05em;margin-bottom:8px;">EARNINGS-FOR-GROWTH</div>
+        <div style="font-size:14px;line-height:1.75;color:rgba(240,237,232,0.72);">Identifying high-probability setups around earnings catalysts — where institutional options flow and AI signals align with fundamental strength.</div>
+      </div>
+      <div style="background:var(--surface);padding:28px 32px;border-left:3px solid var(--gold);">
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:0.05em;margin-bottom:8px;">RISK-ADJUSTED POSITIONING</div>
+        <div style="font-size:14px;line-height:1.75;color:rgba(240,237,232,0.72);">Every position sized to 2–3% of portfolio max. Hard stops. Defined risk. A framework built so that no single trade ever threatens the account.</div>
+      </div>
+      <div style="background:var(--surface);padding:28px 32px;border-left:3px solid var(--green);">
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:0.05em;margin-bottom:8px;">SMALL ACCOUNT SCALABLE</div>
+        <div style="font-size:14px;line-height:1.75;color:rgba(240,237,232,0.72);">Every strategy, every framework, every trade idea is calibrated for accounts starting at $5,000. You don't need a large account. You need the right system.</div>
+      </div>
+      <div style="background:var(--surface);padding:28px 32px;border-left:3px solid var(--blue);">
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:0.05em;margin-bottom:8px;">AI-GUIDED MARKET INSIGHTS</div>
+        <div style="font-size:14px;line-height:1.75;color:rgba(240,237,232,0.72);">Daily newsletter distills market conditions, key levels, volatility readings, and AI-flagged opportunities — so you walk into every session prepared.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SMALL ACCOUNT LIVE -->
+<section class="reveal" style="background:var(--navy);">
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center;">
+    <div>
+      <div class="section-eyebrow">Live & Transparent</div>
+      <h2 class="section-title">WATCH A REAL<br><span>ACCOUNT GROW.</span></h2>
+      <div style="font-size:16px;line-height:1.95;color:rgba(240,237,232,0.75);margin-top:28px;">
+        <p>Talk is cheap. Results are everything.</p>
+        <br>
+        <p>Every two weeks, I go live with my own personal small account — showing Operator and Commander members exactly how I'm applying the AI research, managing positions, and compounding real capital in real time.</p>
+        <br>
+        <p>No hypotheticals. No paper trades. <strong style="color:var(--text);">A live account, on camera, growing with the same tools I'm giving you.</strong></p>
+      </div>
+      <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:32px;">
+        <a href="#tiers" class="btn-primary">Become an Operator →</a>
+        <a href="#tiers" class="btn-ghost">View All Plans</a>
+      </div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:2px;">
+      <div style="background:var(--card);padding:32px 24px;text-align:center;border-top:2px solid var(--red);">
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:48px;letter-spacing:0.02em;color:var(--gold);line-height:1;">LIVE</div>
+        <div style="font-size:11px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:rgba(240,237,232,0.55);margin-top:8px;">Real Account</div>
+        <div style="font-size:13px;color:rgba(240,237,232,0.55);margin-top:6px;line-height:1.6;">Daniel's personal account — visible, real, growing</div>
+      </div>
+      <div style="background:var(--card);padding:32px 24px;text-align:center;border-top:2px solid var(--gold);">
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:48px;letter-spacing:0.02em;color:var(--gold);line-height:1;">2x</div>
+        <div style="font-size:11px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:rgba(240,237,232,0.55);margin-top:8px;">Per Month</div>
+        <div style="font-size:13px;color:rgba(240,237,232,0.55);margin-top:6px;line-height:1.6;">Bi-weekly live sessions, replays available</div>
+      </div>
+      <div style="background:var(--card);padding:32px 24px;text-align:center;">
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:48px;letter-spacing:0.02em;color:var(--gold);line-height:1;">AI</div>
+        <div style="font-size:11px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:rgba(240,237,232,0.55);margin-top:8px;">Research Live</div>
+        <div style="font-size:13px;color:rgba(240,237,232,0.55);margin-top:6px;line-height:1.6;">Watch the proprietary tool in action, trade by trade</div>
+      </div>
+      <div style="background:var(--card);padding:32px 24px;text-align:center;">
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:48px;letter-spacing:0.02em;color:var(--gold);line-height:1;">Q&A</div>
+        <div style="font-size:11px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:rgba(240,237,232,0.55);margin-top:8px;">Every Session</div>
+        <div style="font-size:13px;color:rgba(240,237,232,0.55);margin-top:6px;line-height:1.6;">Ask questions live as Daniel trades the account</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TIERS -->
+<section class="tiers reveal" id="tiers">
+  <div class="section-eyebrow">Choose Your Rank</div>
+  <h2 class="section-title">EVERY WARRIOR<br><span>STARTS SOMEWHERE.</span></h2>
+
+  <!-- BILLING TOGGLE -->
+  <div style="display:flex;align-items:center;justify-content:center;gap:16px;margin-top:40px;margin-bottom:48px;">
+    <span id="lbl-monthly" style="font-size:13px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--text);">Monthly</span>
+    <div id="billing-toggle" onclick="toggleBilling()" style="width:52px;height:28px;background:var(--red);border-radius:14px;position:relative;cursor:pointer;transition:background 0.2s;flex-shrink:0;">
+      <div id="toggle-knob" style="position:absolute;top:4px;left:4px;width:20px;height:20px;background:#fff;border-radius:50%;transition:transform 0.25s;"></div>
+    </div>
+    <span id="lbl-annual" style="font-size:13px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);">Annual</span>
+    <span style="background:var(--gold);color:#080A10;font-size:10px;font-weight:800;letter-spacing:0.14em;text-transform:uppercase;padding:4px 12px;">SAVE 15%</span>
+  </div>
+
+  <div class="tiers-grid">
+    <!-- RECRUIT -->
+    <div class="tier-card">
+      <div class="tier-rank">Tier 01</div>
+      <div class="tier-name">RECRUIT</div>
+      <div class="tier-price">
+        <span class="price-monthly"><sup>$</sup>99<sub>/mo</sub></span>
+        <span class="price-annual" style="display:none;"><sup>$</sup>84<sub>/mo</sub></span>
+      </div>
+      <div class="annual-note" style="display:none;font-size:11px;color:var(--gold);font-weight:600;letter-spacing:0.06em;margin-bottom:8px;">$1,010 billed annually · Save $178</div>
+      <ul class="tier-features">
+        <li><span class="chk">✓</span> Weekly Market Analysis</li>
+        <li><span class="chk">✓</span> Weekly Newsletter with Top Warrior Freedom Trades</li>
+        <li><span class="chk">✓</span> Risk-Adjusted Trade Ideas & Analysis</li>
+        <li><span class="xmk">✗</span> Bi-Weekly Strategy & Live Trade Calls</li>
+        <li><span class="xmk">✗</span> Small Account Live Series</li>
+        <li><span class="xmk">✗</span> LEAP Opportunities</li>
+        <li><span class="xmk">✗</span> 1-on-1 Coaching</li>
+      </ul>
+      <a href="#" class="tier-btn ghost" onclick="event.preventDefault(); startCheckout('recruit')">Enlist as Recruit</a>
+    </div>
+
+    <!-- OPERATOR -->
+    <div class="tier-card featured">
+      <div class="tier-label-top">Most Popular</div>
+      <div class="tier-rank">Tier 02</div>
+      <div class="tier-name">OPERATOR</div>
+      <div class="tier-price">
+        <span class="price-monthly"><sup>$</sup>149<sub>/mo</sub></span>
+        <span class="price-annual" style="display:none;"><sup>$</sup>127<sub>/mo</sub></span>
+      </div>
+      <div class="annual-note" style="display:none;font-size:11px;color:var(--gold);font-weight:600;letter-spacing:0.06em;margin-bottom:8px;">$1,524 billed annually · Save $264</div>
+      <ul class="tier-features">
+        <li><span class="chk">✓</span> Everything in Recruit</li>
+        <li><span class="chk">✓</span> Bi-Weekly Strategy & Live Trade Calls</li>
+        <li><span class="chk">✓</span> Focused on Building Smaller Accounts</li>
+        <li><span class="chk">✓</span> Small Account Live Series (Bi-Weekly)</li>
+        <li><span class="chk">✓</span> LEAP Opportunities</li>
+        <li><span class="chk">✓</span> AI Signal Breakdown</li>
+        <li><span class="xmk">✗</span> 1-on-1 Coaching Sessions</li>
+      </ul>
+      <a href="#" class="tier-btn" onclick="event.preventDefault(); startCheckout('operator')">Become an Operator</a>
+    </div>
+
+    <!-- COMMANDER -->
+    <div class="tier-card">
+      <div class="tier-rank">Tier 03</div>
+      <div class="tier-name">COMMANDER</div>
+      <div class="tier-price">
+        <span class="price-monthly"><sup>$</sup>297<sub>/mo</sub></span>
+        <span class="price-annual" style="display:none;"><sup>$</sup>252<sub>/mo</sub></span>
+      </div>
+      <div class="annual-note" style="display:none;font-size:11px;color:var(--gold);font-weight:600;letter-spacing:0.06em;margin-bottom:8px;">$3,024 billed annually · Save $540</div>
+      <ul class="tier-features">
+        <li><span class="chk">✓</span> Everything in Operator</li>
+        <li><span class="chk">✓</span> Bi-Weekly Strategy & Live Trade Calls</li>
+        <li><span class="chk">✓</span> 3 x 1-on-1 Coaching Sessions / Year</li>
+        <li><span class="chk">✓</span> Portfolio Review</li>
+        <li><span class="chk">✓</span> AI Tool Walkthrough</li>
+        <li><span class="chk">✓</span> Commander Badge & Priority Access</li>
+        <li><span class="chk">✓</span> Founding Member Rate — Locked In</li>
+      </ul>
+      <a href="#" class="tier-btn" onclick="event.preventDefault(); startCheckout('commander')">Command Your Future</a>
+    </div>
+  </div>
+
+  <div style="text-align:center;margin-top:24px;font-size:12px;color:rgba(240,237,232,0.35);line-height:1.8;">
+    All plans include a 7-day money-back guarantee. Cancel anytime. Annual plans are billed in full at checkout.
+  </div>
+</section>
+
+<!-- CTA BAND -->
+<div class="cta-band reveal">
+  <div class="cta-band-title">THE MISSION<br>STARTS NOW.</div>
+  <div class="cta-band-sub">
+    You've spent long enough watching from the sidelines. Warrior Freedom AI gives you the discipline, the data, and the community to finally trade with edge.
+  </div>
+  <a href="#tiers" class="btn-white">Join Warrior Freedom →</a>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-brand">WARRIOR<span>FREEDOM</span>.AI</div>
+  <ul class="footer-links">
+    <li><a href="#">About</a></li>
+    <li><a href="#">Platform</a></li>
+    <li><a href="#">Pricing</a></li>
+    <li><a href="#">Contact</a></li>
+  </ul>
+  <div class="footer-copy">
+    © 2026 Warrior Freedom AI. All rights reserved.<br>
+    <span style="font-size:10px;opacity:0.6;">Past performance is not indicative of future results. All trading involves risk.</span>
+  </div>
+</footer>
+
+<script>
+// ── STRIPE CHECKOUT ───────────────────────────────────────────
+const SUPABASE_URL_HOME = 'https://rwlbiccsypoqwngwisvx.supabase.co';
+const STRIPE_PK = 'pk_test_51TM6pHHzun1zIIvcyetjvheTHln9cffAhFPahfgsdOLAeuBlAnhWvUh1CAwV8SDRWTYeert5bUpFvYzr0cONZvVd00tGxc7Fgw';
+
+async function startCheckout(tier, billing) {
+  const btn = event.currentTarget;
+  const originalText = btn.textContent;
+  btn.textContent = 'LOADING...';
+  btn.style.opacity = '0.7';
+  btn.style.pointerEvents = 'none';
+
+  try {
+    const res = await fetch(`${SUPABASE_URL_HOME}/functions/v1/stripe-checkout`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ tier, billing })
+    });
+    const data = await res.json();
+    if (data.url) {
+      window.location.href = data.url;
+    } else {
+      alert('Something went wrong. Please try again.');
+      btn.textContent = originalText;
+      btn.style.opacity = '1';
+      btn.style.pointerEvents = 'auto';
+    }
+  } catch (err) {
+    alert('Connection error. Please try again.');
+    btn.textContent = originalText;
+    btn.style.opacity = '1';
+    btn.style.pointerEvents = 'auto';
+  }
+}
+
+// Detect billing mode from toggle and launch checkout
+function checkout(tier) {
+  const billing = isAnnual ? 'annual' : 'monthly';
+  startCheckout(tier, billing);
+}
+
+let isAnnual = false;
+
+// ── STRIPE PRICE IDs ─────────────────────────────────────────
+const PRICES = {
+  recruit:   { monthly: 'price_1TMGMMHzun1zIIvcbZgenWtG', annual: 'price_1TMGNXHzun1zIIvcuD2fCeZe' },
+  operator:  { monthly: 'price_1TMGRlHzun1zIIvcGsjo7kdQ', annual: 'price_1TMGRlHzun1zIIvci3ylzbns' },
+  commander: { monthly: 'price_1TMGY8Hzun1zIIvcpEJQ9eoR', annual: 'price_1TMGY8Hzun1zIIvcO96P6bpf' },
+};
+
+const SUPABASE_URL = 'https://rwlbiccsypoqwngwisvx.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ3bGJpY2NzeXBvcXduZ3dpc3Z4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYxNDA0NDEsImV4cCI6MjA5MTcxNjQ0MX0.b7tTs108R6-CbE5mpfXa-4ODVEM3Qk9dgTt22NFsnkU';
+
+// ── CHECKOUT ──────────────────────────────────────────────────
+async function startCheckout(tier) {
+  const priceId = isAnnual ? PRICES[tier].annual : PRICES[tier].monthly;
+  const billing = isAnnual ? 'annual' : 'monthly';
+
+  // Check if user is logged into Supabase
+  const { createClient } = await import('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm');
+  const sb = createClient(SUPABASE_URL, SUPABASE_KEY);
+  const { data: { session } } = await sb.auth.getSession();
+
+  if (!session) {
+    // Not logged in — redirect to dashboard login with intent
+    sessionStorage.setItem('checkout_tier', tier);
+    sessionStorage.setItem('checkout_price', priceId);
+    sessionStorage.setItem('checkout_billing', billing);
+    window.location.href = 'warriorfreedom-dashboard.html?join=' + tier;
+    return;
+  }
+
+  // Show loading state
+  const btn = event.target;
+  const originalText = btn.textContent;
+  btn.textContent = 'LOADING...';
+  btn.style.opacity = '0.7';
+  btn.style.pointerEvents = 'none';
+
+  try {
+    const res = await fetch(`${SUPABASE_URL}/functions/v1/stripe-checkout`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${session.access_token}`,
+      },
+      body: JSON.stringify({
+        price_id: priceId,
+        user_email: session.user.email,
+        user_id: session.user.id,
+        billing,
+      }),
+    });
+
+    const { url, error } = await res.json();
+
+    if (error) throw new Error(error);
+    window.location.href = url;
+
+  } catch (err) {
+    console.error('Checkout error:', err);
+    btn.textContent = originalText;
+    btn.style.opacity = '1';
+    btn.style.pointerEvents = 'auto';
+    alert('Something went wrong. Please try again or contact support@warriorfreedom.ai');
+  }
+}
+
+// ── BILLING TOGGLE ────────────────────────────────────────────
+function toggleBilling() {
+  isAnnual = !isAnnual;
+  const knob = document.getElementById('toggle-knob');
+  const lblM = document.getElementById('lbl-monthly');
+  const lblA = document.getElementById('lbl-annual');
+  const toggle = document.getElementById('billing-toggle');
+
+  knob.style.transform = isAnnual ? 'translateX(24px)' : 'translateX(0)';
+  toggle.style.background = isAnnual ? 'var(--gold)' : 'var(--red)';
+  lblM.style.color = isAnnual ? 'var(--muted)' : 'var(--text)';
+  lblA.style.color = isAnnual ? 'var(--text)' : 'var(--muted)';
+
+  document.querySelectorAll('.price-monthly').forEach(el => {
+    el.style.display = isAnnual ? 'none' : 'inline';
+  });
+  document.querySelectorAll('.price-annual').forEach(el => {
+    el.style.display = isAnnual ? 'inline' : 'none';
+  });
+  document.querySelectorAll('.annual-note').forEach(el => {
+    el.style.display = isAnnual ? 'block' : 'none';
+  });
+}
+
+const reveals = document.querySelectorAll('.reveal');
+const obs = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+}, { threshold: 0.1 });
+reveals.forEach(r => obs.observe(r));
+</script>
+</body>
+</html>
