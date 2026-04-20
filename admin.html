@@ -1,0 +1,677 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Warrior Freedom AI — Admin Command Center</title>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;700&family=Share+Tech+Mono&display=swap" rel="stylesheet"/>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  <style>
+    :root {
+      --bg:      #05070f;
+      --card:    #0b0e1a;
+      --navy:    #0d1527;
+      --border:  #1a2040;
+      --crimson: #c8102e;
+      --gold:    #d4a017;
+      --white:   #f0f0f0;
+      --muted:   #7a8499;
+      --green:   #22c55e;
+      --red:     #ef4444;
+      --yellow:  #eab308;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { background: var(--bg); color: var(--white); font-family: 'DM Sans', sans-serif; height: 100%; }
+    ::-webkit-scrollbar { width: 4px; }
+    ::-webkit-scrollbar-track { background: var(--card); }
+    ::-webkit-scrollbar-thumb { background: var(--crimson); border-radius: 2px; }
+
+    /* Layout */
+    .layout { display: flex; min-height: 100vh; }
+    .sidebar { width: 240px; background: var(--card); border-right: 1px solid var(--border); display: flex; flex-direction: column; position: fixed; top: 0; left: 0; bottom: 0; z-index: 100; }
+    .main { margin-left: 240px; flex: 1; padding: 48px; min-height: 100vh; }
+
+    /* Sidebar */
+    .sidebar-logo { padding: 28px 24px; border-bottom: 1px solid var(--border); }
+    .logo-mark { width: 28px; height: 28px; border: 2px solid var(--crimson); display: inline-flex; align-items: center; justify-content: center; transform: rotate(45deg); animation: pulse-red 3s ease-in-out infinite; margin-bottom: 8px; }
+    .logo-mark-inner { width: 10px; height: 10px; background: var(--crimson); }
+    .logo-title { font-family: 'Bebas Neue', sans-serif; font-size: 16px; color: var(--white); letter-spacing: 2px; }
+    .logo-sub { font-family: 'Share Tech Mono', monospace; font-size: 9px; color: var(--crimson); letter-spacing: 4px; margin-top: 4px; }
+    .nav { padding: 16px 12px; flex: 1; }
+    .nav-item { display: flex; align-items: center; gap: 12px; width: 100%; padding: 12px 16px; margin-bottom: 4px; background: transparent; border: none; cursor: pointer; font-family: 'Bebas Neue', sans-serif; font-size: 18px; letter-spacing: 2px; color: var(--muted); transition: all 0.2s; text-align: left; border-radius: 2px; }
+    .nav-item:hover { background: #1a2040; color: var(--white); }
+    .nav-item.active { background: var(--crimson); color: #fff; }
+    .sidebar-footer { padding: 16px 24px; border-top: 1px solid var(--border); font-family: 'Share Tech Mono', monospace; font-size: 9px; color: var(--muted); letter-spacing: 2px; line-height: 1.8; }
+
+    /* Section header */
+    .section-header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 28px; }
+    .section-sub { font-family: 'Share Tech Mono', monospace; font-size: 10px; color: var(--crimson); letter-spacing: 4px; margin-bottom: 4px; }
+    .section-title { font-family: 'Bebas Neue', sans-serif; font-size: 36px; color: var(--white); letter-spacing: 3px; }
+
+    /* Stat cards */
+    .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px; margin-bottom: 40px; }
+    .stat-card { background: var(--card); border: 1px solid var(--border); padding: 24px 20px; transition: all 0.3s; cursor: default; animation: fadeIn 0.5s ease both; }
+    .stat-card:hover { border-color: var(--crimson); transform: translateY(-2px); }
+    .stat-label { font-family: 'Share Tech Mono', monospace; font-size: 10px; color: var(--muted); letter-spacing: 3px; margin-bottom: 12px; }
+    .stat-value { font-family: 'Bebas Neue', sans-serif; font-size: 44px; line-height: 1; }
+    .stat-sub { font-family: 'Share Tech Mono', monospace; font-size: 10px; color: var(--muted); letter-spacing: 2px; margin-top: 8px; }
+
+    /* Tables */
+    .table-wrap { background: var(--card); border: 1px solid var(--border); overflow: hidden; margin-bottom: 32px; }
+    .table-header { display: grid; padding: 12px 20px; border-bottom: 1px solid var(--border); font-family: 'Share Tech Mono', monospace; font-size: 10px; color: var(--muted); letter-spacing: 3px; }
+    .table-row { display: grid; padding: 16px 20px; align-items: center; border-bottom: 1px solid var(--border); transition: background 0.2s; }
+    .table-row:last-child { border-bottom: none; }
+    .table-row:hover { background: #0f1628; }
+
+    /* Badges */
+    .badge { display: inline-block; padding: 2px 10px; font-family: 'Share Tech Mono', monospace; font-size: 10px; letter-spacing: 2px; }
+    .badge-green { background: rgba(34,197,94,0.15); color: var(--green); border: 1px solid rgba(34,197,94,0.3); }
+    .badge-red { background: rgba(239,68,68,0.15); color: var(--red); border: 1px solid rgba(239,68,68,0.3); }
+    .badge-gold { background: rgba(212,160,23,0.15); color: var(--gold); border: 1px solid rgba(212,160,23,0.3); }
+    .badge-crimson { background: rgba(200,16,46,0.15); color: var(--crimson); border: 1px solid rgba(200,16,46,0.3); }
+    .badge-muted { background: rgba(122,132,153,0.15); color: var(--muted); border: 1px solid rgba(122,132,153,0.3); }
+    .badge-yellow { background: rgba(234,179,8,0.15); color: var(--yellow); border: 1px solid rgba(234,179,8,0.3); }
+
+    /* Buttons */
+    .btn { padding: 10px 28px; font-family: 'Bebas Neue', sans-serif; font-size: 16px; letter-spacing: 2px; cursor: pointer; border: none; transition: all 0.2s; }
+    .btn-primary { background: var(--crimson); color: #fff; }
+    .btn-primary:hover { background: #ff1a3e; }
+    .btn-outline { background: transparent; color: var(--gold); border: 1px solid rgba(212,160,23,0.4); }
+    .btn-outline:hover { background: rgba(212,160,23,0.1); }
+    .btn-sm { padding: 4px 12px; font-size: 11px; font-family: 'Share Tech Mono', monospace; letter-spacing: 2px; cursor: pointer; border: none; }
+    .btn-cancel { background: rgba(239,68,68,0.15); color: var(--red); border: 1px solid rgba(239,68,68,0.3); }
+    .btn-cancel:hover { background: rgba(239,68,68,0.3); }
+    .btn-win { background: rgba(34,197,94,0.15); color: var(--green); border: 1px solid rgba(34,197,94,0.3); }
+    .btn-win:hover { background: rgba(34,197,94,0.3); }
+    .btn-loss { background: rgba(239,68,68,0.15); color: var(--red); border: 1px solid rgba(239,68,68,0.3); }
+
+    /* Tab buttons */
+    .tabs { display: flex; gap: 8px; }
+    .tab-btn { background: transparent; border: 1px solid var(--border); color: var(--muted); padding: 8px 20px; font-family: 'Bebas Neue', sans-serif; font-size: 16px; letter-spacing: 2px; cursor: pointer; transition: all 0.2s; }
+    .tab-btn:hover { border-color: rgba(200,16,46,0.4); color: var(--white); }
+    .tab-btn.active { border-color: var(--crimson); color: var(--crimson); }
+
+    /* Forms */
+    .form-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+    .form-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+    .form-group { margin-bottom: 0; }
+    .form-label { font-family: 'Share Tech Mono', monospace; font-size: 10px; color: var(--muted); letter-spacing: 3px; margin-bottom: 6px; display: block; }
+    .form-input { width: 100%; background: var(--bg); border: 1px solid var(--border); color: var(--white); padding: 10px 14px; font-family: 'DM Sans', sans-serif; font-size: 14px; outline: none; }
+    .form-input:focus { border-color: var(--crimson); }
+    .form-input::placeholder { color: var(--muted); }
+    .form-textarea { width: 100%; background: var(--bg); border: 1px solid var(--border); color: var(--white); padding: 10px 14px; font-family: 'DM Sans', sans-serif; font-size: 14px; outline: none; resize: vertical; }
+    .form-textarea:focus { border-color: var(--crimson); }
+    .form-select { width: 100%; background: var(--bg); border: 1px solid var(--border); color: var(--white); padding: 10px 14px; font-family: 'DM Sans', sans-serif; font-size: 14px; outline: none; }
+    .form-select:focus { border-color: var(--crimson); }
+
+    /* Views */
+    .view { display: none; animation: fadeIn 0.4s ease; }
+    .view.active { display: block; }
+
+    /* Two col layout */
+    .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 32px; }
+    .panel { background: var(--card); border: 1px solid var(--border); padding: 24px; }
+    .panel-title { font-family: 'Bebas Neue', sans-serif; font-size: 22px; color: var(--white); letter-spacing: 3px; margin-bottom: 4px; }
+    .panel-sub { font-family: 'Share Tech Mono', monospace; font-size: 10px; color: var(--gold); letter-spacing: 3px; margin-bottom: 20px; }
+
+    /* Search */
+    .search-wrap { margin-bottom: 20px; }
+    .search-input { max-width: 400px; background: var(--card); border: 1px solid var(--border); color: var(--white); padding: 10px 14px; font-size: 14px; outline: none; font-family: 'DM Sans', sans-serif; width: 100%; }
+    .search-input:focus { border-color: var(--crimson); }
+    .search-input::placeholder { color: var(--muted); }
+
+    /* Loading / empty */
+    .loading-text { padding: 40px; text-align: center; font-family: 'Share Tech Mono', monospace; color: var(--muted); font-size: 12px; }
+    .empty-text { padding: 40px; text-align: center; color: var(--muted); font-size: 14px; }
+
+    /* Login screen */
+    .login-screen { min-height: 100vh; display: flex; align-items: center; justify-content: center; background: var(--bg); }
+    .login-card { background: var(--card); border: 1px solid var(--border); padding: 48px; width: 400px; }
+    .login-title { font-family: 'Bebas Neue', sans-serif; font-size: 36px; color: var(--white); letter-spacing: 3px; margin-bottom: 4px; }
+    .login-sub { font-family: 'Share Tech Mono', monospace; font-size: 10px; color: var(--crimson); letter-spacing: 4px; margin-bottom: 32px; }
+    .login-error { font-family: 'Share Tech Mono', monospace; font-size: 11px; color: var(--red); margin-top: 12px; }
+
+    /* Animations */
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes pulse-red { 0%, 100% { box-shadow: 0 0 10px rgba(200,16,46,0.3); } 50% { box-shadow: 0 0 20px rgba(200,16,46,0.7); } }
+    @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+    .blink { animation: blink 0.8s step-end infinite; }
+
+    /* Confirm dialog */
+    .confirm-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.8); display: flex; align-items: center; justify-content: center; z-index: 999; }
+    .confirm-box { background: var(--card); border: 1px solid var(--crimson); padding: 40px; max-width: 400px; text-align: center; }
+    .confirm-title { font-family: 'Bebas Neue', sans-serif; font-size: 28px; color: var(--white); letter-spacing: 2px; margin-bottom: 12px; }
+    .confirm-msg { font-size: 14px; color: var(--muted); margin-bottom: 28px; line-height: 1.7; }
+    .confirm-btns { display: flex; gap: 12px; justify-content: center; }
+    .success-toast { position: fixed; bottom: 32px; right: 32px; background: var(--card); border: 1px solid var(--green); padding: 16px 24px; font-family: 'Share Tech Mono', monospace; font-size: 12px; color: var(--green); letter-spacing: 2px; z-index: 999; animation: fadeIn 0.3s ease; }
+  </style>
+</head>
+<body>
+
+<!-- LOGIN SCREEN -->
+<div id="login-screen" class="login-screen">
+  <div class="login-card">
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:24px;">
+      <div class="logo-mark"><div class="logo-mark-inner"></div></div>
+      <div>
+        <div class="logo-title">WARRIOR FREEDOM</div>
+        <div class="logo-sub">ADMIN ACCESS</div>
+      </div>
+    </div>
+    <div class="login-title">COMMAND LOGIN</div>
+    <div class="login-sub">// AUTHORIZED PERSONNEL ONLY</div>
+    <div class="form-group" style="margin-bottom:16px;">
+      <label class="form-label">EMAIL</label>
+      <input class="form-input" type="email" id="login-email" placeholder="your@email.com"/>
+    </div>
+    <div class="form-group" style="margin-bottom:24px;">
+      <label class="form-label">PASSWORD</label>
+      <input class="form-input" type="password" id="login-password" placeholder="••••••••" onkeydown="if(event.key==='Enter')login()"/>
+    </div>
+    <button class="btn btn-primary" style="width:100%;" onclick="login()">AUTHENTICATE</button>
+    <div id="login-error" class="login-error"></div>
+  </div>
+</div>
+
+<!-- ADMIN LAYOUT -->
+<div id="admin-layout" class="layout" style="display:none;">
+
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <div class="sidebar-logo">
+      <div style="display:flex;align-items:center;gap:10px;">
+        <div class="logo-mark"><div class="logo-mark-inner"></div></div>
+        <div>
+          <div class="logo-title">WARRIOR FREEDOM</div>
+          <div class="logo-sub">ADMIN</div>
+        </div>
+      </div>
+    </div>
+    <nav class="nav">
+      <button class="nav-item active" onclick="showView('overview',this)">◈ &nbsp;OVERVIEW</button>
+      <button class="nav-item" onclick="showView('members',this)">◉ &nbsp;MEMBERS</button>
+      <button class="nav-item" onclick="showView('signals',this)">◆ &nbsp;SIGNALS</button>
+      <button class="nav-item" onclick="showView('newsletter',this)">◇ &nbsp;NEWSLETTER</button>
+    </nav>
+    <div class="sidebar-footer">
+      DANIEL NARANJO<br/>
+      <span style="color:var(--crimson);">ADMINISTRATOR</span><br/><br/>
+      <span style="cursor:pointer;color:var(--muted);" onclick="logout()">SIGN OUT →</span>
+    </div>
+  </div>
+
+  <!-- Main -->
+  <div class="main">
+
+    <!-- OVERVIEW -->
+    <div id="view-overview" class="view active">
+      <div class="section-header">
+        <div>
+          <div class="section-sub">// REAL-TIME PLATFORM METRICS</div>
+          <div class="section-title">COMMAND OVERVIEW</div>
+        </div>
+        <div style="font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--muted);" id="last-updated"></div>
+      </div>
+      <div class="stats-grid" id="stats-grid">
+        <div class="stat-card"><div class="stat-label">LOADING</div><div class="stat-value" style="color:var(--gold);">—</div></div>
+      </div>
+      <div class="two-col">
+        <div class="panel">
+          <div class="panel-title">RECENT SIGNUPS</div>
+          <div class="panel-sub">LATEST MEMBERS</div>
+          <div id="recent-signups"><div class="loading-text">LOADING<span class="blink">_</span></div></div>
+        </div>
+        <div class="panel">
+          <div class="panel-title">RECENT PAYMENTS</div>
+          <div class="panel-sub">LATEST TRANSACTIONS</div>
+          <div id="recent-payments"><div class="loading-text">LOADING<span class="blink">_</span></div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MEMBERS -->
+    <div id="view-members" class="view">
+      <div class="section-header">
+        <div>
+          <div class="section-sub">// MEMBER MANAGEMENT</div>
+          <div class="section-title">ALL MEMBERS</div>
+        </div>
+        <div id="member-count" style="font-family:'Share Tech Mono',monospace;font-size:12px;color:var(--gold);"></div>
+      </div>
+      <div class="search-wrap">
+        <input class="search-input" type="text" id="member-search" placeholder="Search by name or email..." oninput="filterMembers()"/>
+      </div>
+      <div class="table-wrap">
+        <div class="table-header" style="grid-template-columns:2fr 2fr 1fr 1fr 1fr 1fr;">
+          <span>NAME</span><span>EMAIL</span><span>TIER</span><span>STATUS</span><span>EXPIRES</span><span>ACTION</span>
+        </div>
+        <div id="members-list"><div class="loading-text">LOADING<span class="blink">_</span></div></div>
+      </div>
+    </div>
+
+    <!-- SIGNALS -->
+    <div id="view-signals" class="view">
+      <div class="section-header">
+        <div>
+          <div class="section-sub">// AI SIGNAL MANAGEMENT</div>
+          <div class="section-title">TRADE SIGNALS</div>
+        </div>
+        <div class="tabs">
+          <button class="tab-btn active" id="tab-signals-list" onclick="switchSignalTab('list')">ALL SIGNALS</button>
+          <button class="tab-btn" id="tab-signals-new" onclick="switchSignalTab('new')">+ NEW SIGNAL</button>
+        </div>
+      </div>
+
+      <!-- New signal form -->
+      <div id="signal-form-wrap" style="display:none;">
+        <div class="panel" style="margin-bottom:24px;">
+          <div class="panel-title">NEW SIGNAL</div>
+          <div class="panel-sub">DEPLOY A TRADE IDEA TO MEMBERS</div>
+          <div class="form-grid">
+            <div class="form-group"><label class="form-label">TITLE</label><input class="form-input" id="sig-title" placeholder="SPY Bullish Setup — Earnings Play"/></div>
+            <div class="form-group"><label class="form-label">TICKER</label><input class="form-input" id="sig-ticker" placeholder="SPY"/></div>
+            <div class="form-group"><label class="form-label">CONTRACT</label><input class="form-input" id="sig-contract" placeholder="SPY 480C 30DTE"/></div>
+            <div class="form-group">
+              <label class="form-label">SIGNAL TYPE</label>
+              <select class="form-select" id="sig-type">
+                <option value="bullish">Bullish</option>
+                <option value="bearish">Bearish</option>
+                <option value="neutral">Neutral</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">TIER ACCESS</label>
+              <select class="form-select" id="sig-tier">
+                <option value="operator">Operator</option>
+                <option value="commander">Commander Only</option>
+              </select>
+            </div>
+            <div class="form-group"><label class="form-label">CONFIDENCE %</label><input class="form-input" id="sig-confidence" type="number" placeholder="87"/></div>
+            <div class="form-group"><label class="form-label">ENTRY LOW ($)</label><input class="form-input" id="sig-entry-low" type="number" step="0.01" placeholder="2.40"/></div>
+            <div class="form-group"><label class="form-label">ENTRY HIGH ($)</label><input class="form-input" id="sig-entry-high" type="number" step="0.01" placeholder="2.65"/></div>
+            <div class="form-group"><label class="form-label">TARGET ($)</label><input class="form-input" id="sig-target" type="number" step="0.01" placeholder="7.80"/></div>
+            <div class="form-group"><label class="form-label">STOP LOSS ($)</label><input class="form-input" id="sig-stop" type="number" step="0.01" placeholder="1.20"/></div>
+            <div class="form-group"><label class="form-label">RISK/REWARD</label><input class="form-input" id="sig-rr" placeholder="1:3.2"/></div>
+          </div>
+          <div style="margin-bottom:20px;">
+            <label class="form-label">THESIS / REASONING</label>
+            <textarea class="form-textarea" id="sig-thesis" rows="4" placeholder="Explain the trade rationale..."></textarea>
+          </div>
+          <button class="btn btn-primary" onclick="saveSignal()">DEPLOY SIGNAL</button>
+        </div>
+      </div>
+
+      <!-- Signals list -->
+      <div id="signals-list-wrap">
+        <div class="table-wrap">
+          <div class="table-header" style="grid-template-columns:1.5fr 1fr 1fr 1fr 1fr 1fr;">
+            <span>TICKER / CONTRACT</span><span>TYPE</span><span>CONFIDENCE</span><span>TIER</span><span>STATUS</span><span>ACTIONS</span>
+          </div>
+          <div id="signals-list"><div class="loading-text">LOADING<span class="blink">_</span></div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- NEWSLETTER -->
+    <div id="view-newsletter" class="view">
+      <div class="section-header">
+        <div>
+          <div class="section-sub">// MEMBER COMMUNICATIONS</div>
+          <div class="section-title">NEWSLETTER</div>
+        </div>
+        <div class="tabs">
+          <button class="tab-btn active" id="tab-nl-compose" onclick="switchNlTab('compose')">COMPOSE</button>
+          <button class="tab-btn" id="tab-nl-history" onclick="switchNlTab('history')">HISTORY</button>
+        </div>
+      </div>
+
+      <!-- Compose -->
+      <div id="nl-compose-wrap">
+        <div class="panel">
+          <div class="panel-title">NEW NEWSLETTER</div>
+          <div class="panel-sub">DRAFT YOUR MEMBER COMMUNICATION</div>
+          <div class="form-grid-2" style="margin-bottom:16px;">
+            <div class="form-group"><label class="form-label">INTERNAL TITLE</label><input class="form-input" id="nl-title" placeholder="Week 12 Signal Recap"/></div>
+            <div class="form-group">
+              <label class="form-label">SEND TO</label>
+              <select class="form-select" id="nl-tier">
+                <option value="operator">Operator Members</option>
+                <option value="commander">Commander Members</option>
+                <option value="all">All Members</option>
+              </select>
+            </div>
+          </div>
+          <div style="margin-bottom:16px;">
+            <label class="form-label">EMAIL SUBJECT LINE</label>
+            <input class="form-input" id="nl-subject" placeholder="🔴 Warrior Freedom: This Week's AI Signal Alert"/>
+          </div>
+          <div style="margin-bottom:24px;">
+            <label class="form-label">EMAIL BODY</label>
+            <textarea class="form-textarea" id="nl-body" rows="14" placeholder="Write your newsletter here...&#10;&#10;Tip: Keep it tactical. Members want signals, levels, and your analysis."></textarea>
+          </div>
+          <div style="display:flex;align-items:center;gap:16px;">
+            <button class="btn btn-primary" onclick="saveDraft()">SAVE DRAFT</button>
+            <span id="nl-saved" style="font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--green);display:none;">✓ DRAFT SAVED</span>
+            <span style="font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--muted);">Send via Resend dashboard after saving</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- History -->
+      <div id="nl-history-wrap" style="display:none;">
+        <div class="table-wrap">
+          <div class="table-header" style="grid-template-columns:2fr 2fr 1fr 1fr;">
+            <span>TITLE</span><span>SUBJECT</span><span>AUDIENCE</span><span>STATUS</span>
+          </div>
+          <div id="nl-list"><div class="loading-text">LOADING<span class="blink">_</span></div></div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- end main -->
+</div><!-- end layout -->
+
+<!-- Confirm overlay -->
+<div id="confirm-overlay" class="confirm-overlay" style="display:none;">
+  <div class="confirm-box">
+    <div class="confirm-title">CONFIRM ACTION</div>
+    <div class="confirm-msg" id="confirm-msg"></div>
+    <div class="confirm-btns">
+      <button class="btn btn-primary" id="confirm-yes">CONFIRM</button>
+      <button class="btn btn-outline" onclick="hideConfirm()">CANCEL</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div id="toast" class="success-toast" style="display:none;"></div>
+
+<script>
+  // ── SUPABASE INIT ──────────────────────────────────────────────
+  const { createClient } = supabase;
+  const sb = createClient(
+    'https://rwlbiccsypoqwngwisvx.supabase.co',
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ3bGJpY2NzeXBvcXduZ3dpc3Z4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYxNDA0NDEsImV4cCI6MjA5MTcxNjQ0MX0.b7tTs108R6-CbE5mpfXa-4ODVEM3Qk9dgTt22NFsnkU'  // ← Replace with your anon key from Supabase → Settings → API
+  );
+
+  let allMembers = [];
+
+  // ── AUTH ───────────────────────────────────────────────────────
+  async function login() {
+    const email = document.getElementById('login-email').value;
+    const pass  = document.getElementById('login-password').value;
+    const err   = document.getElementById('login-error');
+    err.textContent = '';
+    const { data, error } = await sb.auth.signInWithPassword({ email, password: pass });
+    if (error) { err.textContent = '⚠ ' + error.message; return; }
+    // Check admin flag
+    const { data: profile } = await sb.from('profiles').select('is_admin').eq('id', data.user.id).single();
+    if (!profile?.is_admin) {
+      await sb.auth.signOut();
+      err.textContent = '⚠ Access denied — not an admin account';
+      return;
+    }
+    showAdmin();
+  }
+
+  async function logout() {
+    await sb.auth.signOut();
+    document.getElementById('admin-layout').style.display = 'none';
+    document.getElementById('login-screen').style.display = 'flex';
+  }
+
+  function showAdmin() {
+    document.getElementById('login-screen').style.display = 'none';
+    document.getElementById('admin-layout').style.display = 'flex';
+    loadOverview();
+  }
+
+  // Check if already logged in
+  sb.auth.getSession().then(({ data }) => {
+    if (data.session) showAdmin();
+  });
+
+  // ── NAV ────────────────────────────────────────────────────────
+  function showView(name, btn) {
+    document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+    document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
+    document.getElementById('view-' + name).classList.add('active');
+    btn.classList.add('active');
+    if (name === 'overview') loadOverview();
+    if (name === 'members')  loadMembers();
+    if (name === 'signals')  loadSignals();
+    if (name === 'newsletter') loadNewsletters();
+  }
+
+  // ── HELPERS ────────────────────────────────────────────────────
+  const fmt = n => '$' + (n/100).toLocaleString('en-US', { minimumFractionDigits: 2 });
+  const fmtDate = d => d ? new Date(d).toLocaleDateString('en-US', { month:'short', day:'numeric', year:'numeric' }) : '—';
+  const statusBadge = s => {
+    const map = { active:'badge-green', canceled:'badge-red', past_due:'badge-yellow', inactive:'badge-muted' };
+    return `<span class="badge ${map[s]||'badge-muted'}">${(s||'NONE').toUpperCase()}</span>`;
+  };
+
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = '✓ ' + msg;
+    t.style.display = 'block';
+    setTimeout(() => t.style.display = 'none', 3000);
+  }
+
+  function showConfirm(msg, onYes) {
+    document.getElementById('confirm-msg').textContent = msg;
+    document.getElementById('confirm-overlay').style.display = 'flex';
+    document.getElementById('confirm-yes').onclick = () => { hideConfirm(); onYes(); };
+  }
+  function hideConfirm() { document.getElementById('confirm-overlay').style.display = 'none'; }
+
+  // ── OVERVIEW ───────────────────────────────────────────────────
+  async function loadOverview() {
+    const [{ data: subs }, { data: payments }, { data: signups }] = await Promise.all([
+      sb.from('subscriptions').select('status, subscription_tiers(display_name)'),
+      sb.from('payments').select('amount, status, created_at').order('created_at', { ascending: false }).limit(6),
+      sb.from('profiles').select('full_name, email, created_at').order('created_at', { ascending: false }).limit(6),
+    ]);
+
+    const active    = (subs||[]).filter(s => s.status === 'active');
+    const canceled  = (subs||[]).filter(s => s.status === 'canceled');
+    const revenue   = (payments||[]).filter(p => p.status === 'succeeded').reduce((a,p) => a + p.amount, 0);
+    const operators = active.filter(s => s.subscription_tiers?.display_name === 'Operator').length;
+    const commanders= active.filter(s => s.subscription_tiers?.display_name === 'Commander').length;
+
+    document.getElementById('last-updated').textContent = 'UPDATED: ' + new Date().toLocaleTimeString();
+
+    const colors = ['var(--gold)','var(--green)','var(--red)','var(--gold)','var(--crimson)','var(--gold)'];
+    const cards = [
+      { label:'TOTAL MEMBERS',   value: subs?.length || 0,      sub:'ALL TIME' },
+      { label:'ACTIVE MEMBERS',  value: active.length,          sub:'SUBSCRIBED' },
+      { label:'CANCELED',        value: canceled.length,         sub:'CHURNED' },
+      { label:'TOTAL REVENUE',   value: fmt(revenue),            sub:'ALL PAYMENTS' },
+      { label:'OPERATORS',       value: operators,               sub:'$1,750/YR' },
+      { label:'COMMANDERS',      value: commanders,              sub:'$2,750/YR' },
+    ];
+
+    document.getElementById('stats-grid').innerHTML = cards.map((c,i) => `
+      <div class="stat-card">
+        <div class="stat-label">${c.label}</div>
+        <div class="stat-value" style="color:${colors[i]}">${c.value}</div>
+        <div class="stat-sub">${c.sub}</div>
+      </div>
+    `).join('');
+
+    // Recent signups
+    document.getElementById('recent-signups').innerHTML = (signups||[]).length === 0
+      ? '<div class="empty-text">No signups yet</div>'
+      : (signups||[]).map((m,i,a) => `
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 0;${i<a.length-1?'border-bottom:1px solid var(--border)':''}">
+            <div>
+              <div style="font-size:14px;font-weight:500;">${m.full_name||'—'}</div>
+              <div style="font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--muted);">${m.email}</div>
+            </div>
+            <div style="font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--muted);">${fmtDate(m.created_at)}</div>
+          </div>`).join('');
+
+    // Recent payments
+    document.getElementById('recent-payments').innerHTML = (payments||[]).length === 0
+      ? '<div class="empty-text">No payments yet</div>'
+      : (payments||[]).map((p,i,a) => `
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 0;${i<a.length-1?'border-bottom:1px solid var(--border)':''}">
+            <div>
+              <div style="font-family:'Bebas Neue',sans-serif;font-size:24px;color:${p.status==='succeeded'?'var(--green)':'var(--red)'};">${fmt(p.amount)}</div>
+              <div style="font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--muted);">${fmtDate(p.created_at)}</div>
+            </div>
+            <span class="badge ${p.status==='succeeded'?'badge-green':'badge-red'}">${p.status.toUpperCase()}</span>
+          </div>`).join('');
+  }
+
+  // ── MEMBERS ────────────────────────────────────────────────────
+  async function loadMembers() {
+    document.getElementById('members-list').innerHTML = '<div class="loading-text">LOADING<span class="blink">_</span></div>';
+    const { data } = await sb.from('profiles').select('*, subscriptions(id, status, current_period_end, subscription_tiers(display_name))').order('created_at', { ascending: false });
+    allMembers = data || [];
+    document.getElementById('member-count').textContent = allMembers.length + ' TOTAL';
+    renderMembers(allMembers);
+  }
+
+  function renderMembers(list) {
+    if (list.length === 0) { document.getElementById('members-list').innerHTML = '<div class="empty-text">No members found</div>'; return; }
+    const sub = m => m.subscriptions?.[0];
+    const tierBadge = m => {
+      const t = sub(m)?.subscription_tiers?.display_name;
+      return t ? `<span class="badge ${t==='Commander'?'badge-gold':'badge-crimson'}">${t.toUpperCase()}</span>` : '<span class="badge badge-muted">—</span>';
+    };
+    document.getElementById('members-list').innerHTML = list.map(m => `
+      <div class="table-row" style="grid-template-columns:2fr 2fr 1fr 1fr 1fr 1fr;">
+        <div style="font-size:14px;font-weight:500;">${m.full_name||'—'}</div>
+        <div style="font-family:'Share Tech Mono',monospace;font-size:12px;color:var(--muted);">${m.email}</div>
+        <div>${tierBadge(m)}</div>
+        <div>${statusBadge(sub(m)?.status)}</div>
+        <div style="font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--muted);">${fmtDate(sub(m)?.current_period_end)}</div>
+        <div>${sub(m)?.status==='active'
+          ? `<button class="btn-sm btn-cancel" onclick="cancelMember('${m.id}','${sub(m).id}')">CANCEL</button>`
+          : ''}</div>
+      </div>`).join('');
+  }
+
+  function filterMembers() {
+    const q = document.getElementById('member-search').value.toLowerCase();
+    renderMembers(allMembers.filter(m => m.email?.toLowerCase().includes(q) || m.full_name?.toLowerCase().includes(q)));
+  }
+
+  async function cancelMember(userId, subId) {
+    showConfirm('Cancel this member\'s subscription? They will lose access at the end of their billing period.', async () => {
+      await sb.from('subscriptions').update({ status:'canceled', canceled_at: new Date().toISOString() }).eq('id', subId);
+      await sb.from('admin_activity_log').insert({ action:'canceled_subscription', target_user_id: userId, details:{ subscription_id: subId } });
+      showToast('MEMBERSHIP CANCELED');
+      loadMembers();
+    });
+  }
+
+  // ── SIGNALS ────────────────────────────────────────────────────
+  async function loadSignals() {
+    document.getElementById('signals-list').innerHTML = '<div class="loading-text">LOADING<span class="blink">_</span></div>';
+    const { data } = await sb.from('trade_signals').select('*').order('created_at', { ascending: false });
+    const signals = data || [];
+    if (signals.length === 0) { document.getElementById('signals-list').innerHTML = '<div class="empty-text">No signals yet — create your first one</div>'; return; }
+    const typeColor = t => t==='bullish'?'var(--green)':t==='bearish'?'var(--red)':'var(--muted)';
+    const statusMap = { active:'badge-green', closed_win:'badge-gold', closed_loss:'badge-red', expired:'badge-muted' };
+    document.getElementById('signals-list').innerHTML = signals.map(s => `
+      <div class="table-row" style="grid-template-columns:1.5fr 1fr 1fr 1fr 1fr 1fr;">
+        <div>
+          <div style="font-family:'Bebas Neue',sans-serif;font-size:20px;">${s.ticker}</div>
+          <div style="font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--muted);">${s.contract||'—'}</div>
+        </div>
+        <div style="color:${typeColor(s.signal_type)};font-family:'Share Tech Mono',monospace;font-size:11px;">${(s.signal_type||'').toUpperCase()}</div>
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:24px;color:var(--gold);">${s.confidence_pct||'—'}%</div>
+        <span class="badge ${s.tier_access==='commander'?'badge-gold':'badge-crimson'}">${(s.tier_access||'').toUpperCase()}</span>
+        <span class="badge ${statusMap[s.status]||'badge-muted'}">${(s.status||'').replace('_',' ').toUpperCase()}</span>
+        <div style="display:flex;gap:6px;">
+          ${s.status==='active'
+            ? `<button class="btn-sm btn-win" onclick="closeSignal('${s.id}','closed_win')">WIN</button>
+               <button class="btn-sm btn-loss" onclick="closeSignal('${s.id}','closed_loss')">LOSS</button>`
+            : ''}
+        </div>
+      </div>`).join('');
+  }
+
+  async function saveSignal() {
+    const payload = {
+      title:          document.getElementById('sig-title').value,
+      ticker:         document.getElementById('sig-ticker').value.toUpperCase(),
+      contract:       document.getElementById('sig-contract').value,
+      signal_type:    document.getElementById('sig-type').value,
+      tier_access:    document.getElementById('sig-tier').value,
+      confidence_pct: parseInt(document.getElementById('sig-confidence').value) || null,
+      entry_low:      parseFloat(document.getElementById('sig-entry-low').value) || null,
+      entry_high:     parseFloat(document.getElementById('sig-entry-high').value) || null,
+      target:         parseFloat(document.getElementById('sig-target').value) || null,
+      stop_loss:      parseFloat(document.getElementById('sig-stop').value) || null,
+      risk_reward:    document.getElementById('sig-rr').value,
+      thesis:         document.getElementById('sig-thesis').value,
+    };
+    if (!payload.title || !payload.ticker) { alert('Title and Ticker are required'); return; }
+    await sb.from('trade_signals').insert(payload);
+    showToast('SIGNAL DEPLOYED');
+    switchSignalTab('list');
+    loadSignals();
+  }
+
+  async function closeSignal(id, result) {
+    const label = result === 'closed_win' ? 'WIN' : 'LOSS';
+    showConfirm(`Mark this signal as a ${label}?`, async () => {
+      await sb.from('trade_signals').update({ status: result, updated_at: new Date().toISOString() }).eq('id', id);
+      showToast('SIGNAL CLOSED — ' + label);
+      loadSignals();
+    });
+  }
+
+  function switchSignalTab(tab) {
+    document.getElementById('tab-signals-list').classList.toggle('active', tab==='list');
+    document.getElementById('tab-signals-new').classList.toggle('active', tab==='new');
+    document.getElementById('signal-form-wrap').style.display  = tab==='new'  ? 'block' : 'none';
+    document.getElementById('signals-list-wrap').style.display = tab==='list' ? 'block' : 'none';
+  }
+
+  // ── NEWSLETTER ─────────────────────────────────────────────────
+  async function loadNewsletters() {
+    const { data } = await sb.from('newsletters').select('*').order('created_at', { ascending: false });
+    const list = data || [];
+    const statusMap = { draft:'badge-muted', scheduled:'badge-yellow', sent:'badge-green' };
+    document.getElementById('nl-list').innerHTML = list.length === 0
+      ? '<div class="empty-text">No newsletters yet</div>'
+      : list.map(n => `
+          <div class="table-row" style="grid-template-columns:2fr 2fr 1fr 1fr;">
+            <div style="font-size:14px;font-weight:500;">${n.title}</div>
+            <div style="font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--muted);">${n.subject_line}</div>
+            <span class="badge badge-gold">${(n.tier_access||'').toUpperCase()}</span>
+            <span class="badge ${statusMap[n.status]||'badge-muted'}">${(n.status||'').toUpperCase()}</span>
+          </div>`).join('');
+  }
+
+  async function saveDraft() {
+    const title   = document.getElementById('nl-title').value;
+    const subject = document.getElementById('nl-subject').value;
+    const body    = document.getElementById('nl-body').value;
+    const tier    = document.getElementById('nl-tier').value;
+    if (!title || !subject) { alert('Title and Subject are required'); return; }
+    await sb.from('newsletters').insert({ title, subject_line: subject, body_text: body, tier_access: tier, status: 'draft' });
+    document.getElementById('nl-title').value = '';
+    document.getElementById('nl-subject').value = '';
+    document.getElementById('nl-body').value = '';
+    const saved = document.getElementById('nl-saved');
+    saved.style.display = 'inline';
+    setTimeout(() => saved.style.display = 'none', 3000);
+    showToast('DRAFT SAVED');
+    loadNewsletters();
+  }
+
+  function switchNlTab(tab) {
+    document.getElementById('tab-nl-compose').classList.toggle('active', tab==='compose');
+    document.getElementById('tab-nl-history').classList.toggle('active', tab==='history');
+    document.getElementById('nl-compose-wrap').style.display = tab==='compose' ? 'block' : 'none';
+    document.getElementById('nl-history-wrap').style.display = tab==='history' ? 'block' : 'none';
+    if (tab==='history') loadNewsletters();
+  }
+</script>
+</body>
+</html>
