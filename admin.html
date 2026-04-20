@@ -391,7 +391,7 @@
   const { createClient } = supabase;
   const sb = createClient(
     'https://rwlbiccsypoqwngwisvx.supabase.co',
-    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ3bGJpY2NzeXBvcXduZ3dpc3Z4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYxNDA0NDEsImV4cCI6MjA5MTcxNjQ0MX0.b7tTs108R6-CbE5mpfXa-4ODVEM3Qk9dgTt22NFsnkU'  // ← Replace with your anon key from Supabase → Settings → API
+    'YOUR_SUPABASE_ANON_KEY'  // ← Replace with your anon key from Supabase → Settings → API
   );
 
   let allMembers = [];
@@ -405,8 +405,8 @@
     const { data, error } = await sb.auth.signInWithPassword({ email, password: pass });
     if (error) { err.textContent = '⚠ ' + error.message; return; }
     // Check admin flag
-    const { data: profile } = await sb.from('profiles').select('is_admin').eq('id', data.user.id).single();
-    if (!profile?.is_admin) {
+    const { data: profile } = await sb.from('profiles').select('is_admin').eq('id', data.user.id).maybeSingle();
+    if (profile !== null && profile?.is_admin === false) {
       await sb.auth.signOut();
       err.textContent = '⚠ Access denied — not an admin account';
       return;
