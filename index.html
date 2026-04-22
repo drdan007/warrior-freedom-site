@@ -800,7 +800,7 @@ function PricingPage() {
               </div>
 
               {/* CTA */}
-              <a href={`https://warriorfreedom.ai/checkout?price=${billing === "annual" ? plan.priceIdAnnual : plan.priceIdMonthly}&tier=${plan.tier.toLowerCase()}`} style={{
+              <a href={`https://warriorfreedom.ai/checkout.html?price=${billing === "annual" ? plan.priceIdAnnual : plan.priceIdMonthly}&tier=${plan.tier.toLowerCase()}`} style={{
                 display: "block", textAlign: "center", textDecoration: "none",
                 background: plan.color, color: plan.tier === "COMMANDER" ? "#000" : C.white,
                 padding: "18px 32px",
