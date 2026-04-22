@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Warrior Freedom AI — Checkout</title>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;700&family=Share+Tech+Mono&display=swap" rel="stylesheet"/>
+  <script src="https://js.stripe.com/v3/"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  <style>
+    :root {
+      --bg: #05070f; --card: #0b0e1a; --navy: #0d1527;
+      --border: #1a2040; --crimson: #c8102e; --gold: #d4a017;
+      --white: #f0f0f0; --muted: #7a8499; --green: #22c55e;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: var(--bg); color: var(--white); font-family: 'DM Sans', sans-serif; min-height: 100vh; display: flex; flex-direction: column; }
+    ::-webkit-scrollbar { width: 4px; }
+    ::-webkit-scrollbar-thumb { background: var(--crimson); }
+    @keyframes pulse-red { 0%,100%{box-shadow:0 0 10px #c8102e44;}50%{box-shadow:0 0 30px #c8102e99;} }
+    @keyframes fadeIn { from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:translateY(0);} }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* NAV */
+    nav { display:flex; align-items:center; padding:16px 48px; border-bottom:1px solid var(--border); background:rgba(5,7,15,0.97); }
+    .logo { display:flex; align-items:center; gap:12px; text-decoration:none; }
+    .logo-mark { width:28px; height:28px; border:2px solid var(--crimson); display:flex; align-items:center; justify-content:center; transform:rotate(45deg); animation:pulse-red 3s ease-in-out infinite; }
+    .logo-mark-inner { width:10px; height:10px; background:var(--crimson); }
+    .logo-text { font-family:'Bebas Neue',sans-serif; font-size:18px; color:var(--white); letter-spacing:3px; }
+    .logo-sub { font-family:'Share Tech Mono',monospace; font-size:9px; color:var(--gold); letter-spacing:4px; }
+
+    /* MAIN */
+    main { flex:1; display:flex; align-items:center; justify-content:center; padding:48px 24px; }
+    .checkout-wrap { display:grid; grid-template-columns:1fr 1fr; gap:40px; max-width:900px; width:100%; animation:fadeIn 0.5s ease; }
+
+    /* ORDER SUMMARY */
+    .summary { background:var(--card); border:1px solid var(--border); padding:40px; }
+    .summary-tag { font-family:'Share Tech Mono',monospace; font-size:10px; color:var(--crimson); letter-spacing:4px; margin-bottom:16px; }
+    .summary-tier { font-family:'Bebas Neue',sans-serif; font-size:48px; letter-spacing:4px; margin-bottom:4px; }
+    .summary-billing { font-family:'Share Tech Mono',monospace; font-size:11px; color:var(--muted); letter-spacing:3px; margin-bottom:32px; }
+    .summary-price { font-family:'Bebas Neue',sans-serif; font-size:72px; line-height:1; margin-bottom:4px; }
+    .summary-period { font-family:'Share Tech Mono',monospace; font-size:11px; letter-spacing:3px; margin-bottom:32px; }
+    .divider { border:none; border-top:1px solid var(--border); margin:24px 0; }
+    .feature { display:flex; gap:10px; align-items:flex-start; margin-bottom:12px; font-size:14px; color:var(--white); line-height:1.5; }
+    .feature-icon { flex-shrink:0; margin-top:3px; font-size:11px; }
+    .guarantee { background:rgba(34,197,94,0.08); border:1px solid rgba(34,197,94,0.2); padding:16px; margin-top:24px; }
+    .guarantee-text { font-family:'Share Tech Mono',monospace; font-size:10px; color:var(--green); letter-spacing:2px; line-height:1.7; }
+
+    /* PAYMENT FORM */
+    .payment-form { background:var(--card); border:1px solid var(--border); padding:40px; }
+    .form-tag { font-family:'Share Tech Mono',monospace; font-size:10px; color:var(--crimson); letter-spacing:4px; margin-bottom:24px; }
+    .form-title { font-family:'Bebas Neue',sans-serif; font-size:32px; color:var(--white); letter-spacing:3px; margin-bottom:32px; }
+    .form-group { margin-bottom:20px; }
+    .form-label { font-family:'Share Tech Mono',monospace; font-size:10px; color:var(--muted); letter-spacing:3px; margin-bottom:8px; display:block; }
+    .form-input { width:100%; background:var(--bg); border:1px solid var(--border); color:var(--white); padding:12px 16px; font-family:'DM Sans',sans-serif; font-size:14px; outline:none; transition:border-color 0.2s; }
+    .form-input:focus { border-color:var(--crimson); }
+    .form-input::placeholder { color:var(--muted); }
+    .form-row { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+    .stripe-element { width:100%; background:var(--bg); border:1px solid var(--border); padding:12px 16px; transition:border-color 0.2s; }
+    .stripe-element.focused { border-color:var(--crimson); }
+    .submit-btn { width:100%; background:var(--crimson); color:#fff; border:none; padding:18px; font-family:'Bebas Neue',sans-serif; font-size:22px; letter-spacing:3px; cursor:pointer; transition:all 0.3s; margin-top:8px; display:flex; align-items:center; justify-content:center; gap:12px; }
+    .submit-btn:hover:not(:disabled) { background:#ff1a3e; box-shadow:0 0 30px rgba(200,16,46,0.4); }
+    .submit-btn:disabled { opacity:0.6; cursor:not-allowed; }
+    .spinner { width:20px; height:20px; border:2px solid rgba(255,255,255,0.3); border-top-color:#fff; border-radius:50%; animation:spin 0.8s linear infinite; display:none; }
+    .error-msg { background:rgba(239,68,68,0.1); border:1px solid rgba(239,68,68,0.3); color:#ef4444; padding:12px 16px; font-family:'Share Tech Mono',monospace; font-size:11px; letter-spacing:1px; margin-top:16px; display:none; }
+    .secure-note { display:flex; align-items:center; gap:8px; margin-top:16px; font-family:'Share Tech Mono',monospace; font-size:10px; color:var(--muted); letter-spacing:2px; justify-content:center; }
+
+    /* SUCCESS */
+    .success-screen { display:none; text-align:center; padding:60px 40px; animation:fadeIn 0.5s ease; }
+    .success-icon { font-size:64px; margin-bottom:24px; }
+    .success-title { font-family:'Bebas Neue',sans-serif; font-size:56px; color:var(--green); letter-spacing:4px; margin-bottom:16px; }
+    .success-msg { font-size:16px; color:var(--muted); line-height:1.8; max-width:480px; margin:0 auto 32px; }
+    .success-btn { display:inline-block; background:var(--crimson); color:#fff; text-decoration:none; padding:16px 40px; font-family:'Bebas Neue',sans-serif; font-size:20px; letter-spacing:3px; }
+
+    @media (max-width: 768px) {
+      .checkout-wrap { grid-template-columns:1fr; }
+      nav { padding:16px 24px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <a href="/" class="logo">
+      <div class="logo-mark"><div class="logo-mark-inner"></div></div>
+      <div>
+        <div class="logo-text">WARRIOR FREEDOM</div>
+        <div class="logo-sub">DANIEL NARANJO</div>
+      </div>
+    </a>
+  </nav>
+
+  <!-- MAIN -->
+  <main>
+    <div class="checkout-wrap" id="checkout-wrap">
+
+      <!-- ORDER SUMMARY -->
+      <div class="summary" id="order-summary">
+        <div class="summary-tag">// YOUR ORDER</div>
+        <div class="summary-tier" id="tier-name">OPERATOR</div>
+        <div class="summary-billing" id="billing-label">ANNUAL MEMBERSHIP</div>
+        <div class="summary-price" id="price-display" style="color:var(--crimson);">$999</div>
+        <div class="summary-period" id="period-label" style="color:var(--crimson);">BILLED ANNUALLY</div>
+        <hr class="divider"/>
+        <div id="features-list"></div>
+        <div class="guarantee">
+          <div class="guarantee-text">
+            ✓ 7-DAY MONEY BACK GUARANTEE<br/>
+            ✓ CANCEL ANYTIME<br/>
+            ✓ SECURE PAYMENT VIA STRIPE<br/>
+            ✓ INSTANT ACCESS AFTER PAYMENT
+          </div>
+        </div>
+      </div>
+
+      <!-- PAYMENT FORM -->
+      <div class="payment-form">
+        <div class="form-tag">// SECURE CHECKOUT</div>
+        <div class="form-title">PAYMENT DETAILS</div>
+
+        <div id="payment-section">
+          <div class="form-group">
+            <label class="form-label">FULL NAME</label>
+            <input class="form-input" type="text" id="full-name" placeholder="Daniel Naranjo"/>
+          </div>
+          <div class="form-group">
+            <label class="form-label">EMAIL ADDRESS</label>
+            <input class="form-input" type="email" id="email" placeholder="your@email.com"/>
+          </div>
+          <div class="form-group">
+            <label class="form-label">CARD NUMBER</label>
+            <div class="stripe-element" id="card-number-element"></div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">EXPIRY DATE</label>
+              <div class="stripe-element" id="card-expiry-element"></div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">CVC</label>
+              <div class="stripe-element" id="card-cvc-element"></div>
+            </div>
+          </div>
+
+          <button class="submit-btn" id="submit-btn" onclick="handleSubmit()">
+            <span id="btn-text">DEPLOY MEMBERSHIP</span>
+            <div class="spinner" id="spinner"></div>
+          </button>
+
+          <div class="error-msg" id="error-msg"></div>
+
+          <div class="secure-note">
+            🔒 &nbsp; SECURED BY STRIPE · SSL ENCRYPTED
+          </div>
+        </div>
+
+        <!-- Success screen -->
+        <div class="success-screen" id="success-screen">
+          <div class="success-icon">⚔️</div>
+          <div class="success-title">MISSION ACTIVE</div>
+          <p class="success-msg">
+            Welcome to Warrior Freedom. Your membership is now active. 
+            Check your email for your welcome briefing and access instructions.
+          </p>
+          <a href="/dashboard.html" class="success-btn">ACCESS DASHBOARD →</a>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+<script>
+  // ── CONFIG ──────────────────────────────────────────────────────
+  const SUPABASE_URL = 'https://rwlbiccsypoqwngwisvx.supabase.co';
+  const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ3bGJpY2NzeXBvcXduZ3dpc3Z4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYxNDA0NDEsImV4cCI6MjA5MTcxNjQ0MX0.b7tTs108R6-CbE5mpfXa-4ODVEM3Qk9dgTt22NFsnkU';
+ pk_live_51TM6ozHZk1Hls2H934V8mRY0Sycq4ehiw2vIuwnaTeg48jo9tDD916BWWL416LnBBEmzMGjDzcNfmFkBhE5o4m7U003tVMKjOk'; // ← Replace with your live publishable key pk_live_...
+
+  const { createClient } = supabase;
+  const sb = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+  // ── PARSE URL PARAMS ────────────────────────────────────────────
+  const params = new URLSearchParams(window.location.search);
+  const priceId = params.get('price') || '';
+  const tier = (params.get('tier') || 'operator').toLowerCase();
+
+  // ── PLAN DATA ───────────────────────────────────────────────────
+  const plans = {
+    'price_1TObx9HZk1Hls2H9BkbQOMVC': { tier:'OPERATOR', price:'$99', period:'/ MONTH', billing:'MONTHLY MEMBERSHIP', color:'var(--crimson)', features:['Weekly AI Signal Alerts (SPX, NDX, RUT)','Earnings-for-Growth Trade Framework','LEAPs Strategy + Live Trading Access','Bi-Weekly Small Account Live Series','AI Signal Dashboard Access','Risk-Adjusted Trade Ideas (Weekly)','Member Newsletter & Market Insights','Private Operator Community Access'] },
+    'price_1TObiUHZk1Hls2H9DyJHaUXV': { tier:'OPERATOR', price:'$999', period:'/ YEAR', billing:'ANNUAL MEMBERSHIP — SAVE $189', color:'var(--crimson)', features:['Weekly AI Signal Alerts (SPX, NDX, RUT)','Earnings-for-Growth Trade Framework','LEAPs Strategy + Live Trading Access','Bi-Weekly Small Account Live Series','AI Signal Dashboard Access','Risk-Adjusted Trade Ideas (Weekly)','Member Newsletter & Market Insights','Private Operator Community Access'] },
+    'price_1TObvYHZk1Hls2H9QVRTaw9Q': { tier:'COMMANDER', price:'$199', period:'/ MONTH', billing:'MONTHLY MEMBERSHIP', color:'var(--gold)', features:['Everything in Operator, plus:','3× One-on-One Coaching Sessions/Year','Private Commander Discord Server','Full Portfolio Review & Strategy Session','Priority Real-Time AI Signals','Exclusive Commander Trade Ideas','Monthly Market Outlook Report (PDF)','Direct Line to Daniel Naranjo'] },
+    'price_1TObiVHZk1Hls2H9Qe0VkCTh': { tier:'COMMANDER', price:'$1,999', period:'/ YEAR', billing:'ANNUAL MEMBERSHIP — SAVE $389', color:'var(--gold)', features:['Everything in Operator, plus:','3× One-on-One Coaching Sessions/Year','Private Commander Discord Server','Full Portfolio Review & Strategy Session','Priority Real-Time AI Signals','Exclusive Commander Trade Ideas','Monthly Market Outlook Report (PDF)','Direct Line to Daniel Naranjo'] },
+  };
+
+  // ── POPULATE SUMMARY ────────────────────────────────────────────
+  const plan = plans[priceId];
+  if (plan) {
+    document.getElementById('tier-name').textContent = plan.tier;
+    document.getElementById('tier-name').style.color = plan.color;
+    document.getElementById('billing-label').textContent = plan.billing;
+    document.getElementById('price-display').textContent = plan.price;
+    document.getElementById('price-display').style.color = plan.color;
+    document.getElementById('period-label').textContent = 'BILLED ' + (plan.period.includes('YEAR') ? 'ANNUALLY' : 'MONTHLY');
+    document.getElementById('period-label').style.color = plan.color;
+    document.getElementById('features-list').innerHTML = plan.features.map(f =>
+      `<div class="feature"><span class="feature-icon" style="color:${plan.color}">${f.startsWith('Everything') ? '★' : '◆'}</span><span>${f}</span></div>`
+    ).join('');
+    document.title = `Warrior Freedom AI — Join ${plan.tier}`;
+  } else {
+    window.location.href = '/';
+  }
+
+  // ── STRIPE SETUP ────────────────────────────────────────────────
+  const stripe = Stripe(STRIPE_PK);
+  const elements = stripe.elements({
+    appearance: {
+      theme: 'night',
+      variables: { colorPrimary: '#c8102e', colorBackground: '#05070f', colorText: '#f0f0f0', colorDanger: '#ef4444', fontFamily: 'DM Sans, sans-serif', borderRadius: '0px' }
+    }
+  });
+
+  const cardNumber = elements.create('cardNumber', { style: { base: { color:'#f0f0f0', fontFamily:'DM Sans, sans-serif', fontSize:'14px', '::placeholder':{ color:'#7a8499' } } } });
+  const cardExpiry = elements.create('cardExpiry', { style: { base: { color:'#f0f0f0', fontFamily:'DM Sans, sans-serif', fontSize:'14px', '::placeholder':{ color:'#7a8499' } } } });
+  const cardCvc = elements.create('cardCvc', { style: { base: { color:'#f0f0f0', fontFamily:'DM Sans, sans-serif', fontSize:'14px', '::placeholder':{ color:'#7a8499' } } } });
+
+  cardNumber.mount('#card-number-element');
+  cardExpiry.mount('#card-expiry-element');
+  cardCvc.mount('#card-cvc-element');
+
+  [cardNumber, cardExpiry, cardCvc].forEach(el => {
+    el.on('focus', () => el._element?.parentNode?.classList.add('focused'));
+    el.on('blur', () => el._element?.parentNode?.classList.remove('focused'));
+  });
+
+  // ── HANDLE SUBMIT ───────────────────────────────────────────────
+  async function handleSubmit() {
+    const name = document.getElementById('full-name').value.trim();
+    const email = document.getElementById('email').value.trim();
+    const errEl = document.getElementById('error-msg');
+    const btn = document.getElementById('submit-btn');
+    const spinner = document.getElementById('spinner');
+    const btnText = document.getElementById('btn-text');
+
+    errEl.style.display = 'none';
+
+    if (!name || !email) {
+      errEl.textContent = '⚠ Please enter your full name and email address';
+      errEl.style.display = 'block';
+      return;
+    }
+    if (!/\S+@\S+\.\S+/.test(email)) {
+      errEl.textContent = '⚠ Please enter a valid email address';
+      errEl.style.display = 'block';
+      return;
+    }
+
+    // Show loading
+    btn.disabled = true;
+    btnText.textContent = 'PROCESSING...';
+    spinner.style.display = 'block';
+
+    try {
+      // Sign up or sign in user
+      let userId;
+      const { data: signUpData, error: signUpError } = await sb.auth.signUp({ email, password: Math.random().toString(36).slice(2) + Math.random().toString(36).slice(2), options: { data: { full_name: name } } });
+
+      if (signUpError && signUpError.message.includes('already registered')) {
+        const { data: userData } = await sb.from('profiles').select('id').eq('email', email).single();
+        userId = userData?.id;
+      } else {
+        userId = signUpData?.user?.id;
+      }
+
+      if (!userId) throw new Error('Could not create account. Please try again.');
+
+      // Call Edge Function to create checkout session
+      const { data: checkoutData, error: fnError } = await sb.functions.invoke('create-checkout', {
+        body: { priceId, userId, email, tierName: tier }
+      });
+
+      if (fnError || !checkoutData?.url) throw new Error('Could not create checkout session. Please try again.');
+
+      // Redirect to Stripe checkout
+      window.location.href = checkoutData.url;
+
+    } catch (err) {
+      errEl.textContent = '⚠ ' + (err.message || 'Something went wrong. Please try again.');
+      errEl.style.display = 'block';
+      btn.disabled = false;
+      btnText.textContent = 'DEPLOY MEMBERSHIP';
+      spinner.style.display = 'none';
+    }
+  }
+
+  // Handle success return from Stripe
+  if (params.get('session_id')) {
+    document.getElementById('payment-section').style.display = 'none';
+    document.getElementById('success-screen').style.display = 'block';
+    document.getElementById('order-summary').style.display = 'none';
+  }
+</script>
+</body>
+</html>
