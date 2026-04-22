@@ -389,32 +389,40 @@ function MarketsPage() {
   const [loading, setLoading] = useState(true);
   const [newsLoading, setNewsLoading] = useState(true);
   const [lastUpdated, setLastUpdated] = useState(null);
+  const [vix, setVix] = useState(null);
+  const [marketMeta, setMarketMeta] = useState({ bias: "CAUTIOUSLY BULLISH", volRegime: "ELEVATED — VIX WATCH" });
 
   async function fetchMarketData() {
     setLoading(true);
     try {
-      const raw = await callClaude(
-        `Search the web for TODAY's current market data. Return ONLY valid JSON, no markdown, no explanation:
-{
-  "SPX": { "price": "number as string", "change": "number as string", "changePct": "number as string", "high": "string", "low": "string", "open": "string" },
-  "NDX": { "price": "number as string", "change": "number as string", "changePct": "number as string", "high": "string", "low": "string", "open": "string" },
-  "RUT": { "price": "number as string", "change": "number as string", "changePct": "number as string", "high": "string", "low": "string", "open": "string" }
-}
-Use the most current prices available. Change and changePct can be negative. Return ONLY the JSON object.`,
-        true
+      // Fetch live data from Theta Data via Supabase Edge Function
+      const res = await fetch(
+        "https://rwlbiccsypoqwngwisvx.supabase.co/functions/v1/market-data",
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ3bGJpY2NzeXBvcXduZ3dpc3Z4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYxNDA0NDEsImV4cCI6MjA5MTcxNjQ0MX0.b7tTs108R6-CbE5mpfXa-4ODVEM3Qk9dgTt22NFsnkU",
+          },
+        }
       );
-      const clean = raw.replace(/```json|```/g, "").trim();
-      const start = clean.indexOf("{");
-      const end = clean.lastIndexOf("}");
-      const parsed = JSON.parse(clean.slice(start, end + 1));
-      setIndices(parsed);
-      setLastUpdated(new Date().toLocaleTimeString());
+      const data = await res.json();
+      if (data.SPX && data.NDX && data.RUT) {
+        setIndices(data);
+        setVix(data.VIX);
+        setMarketMeta(data.meta);
+        setLastUpdated(new Date().toLocaleTimeString() + " · LIVE");
+      } else {
+        throw new Error("Invalid data");
+      }
     } catch (e) {
+      // Fallback to cached data if Theta Data unavailable
       setIndices({
-        SPX: { price: "5,620.85", change: "+12.40", changePct: "+0.22", high: "5,634.10", low: "5,598.20", open: "5,608.45" },
-        NDX: { price: "19,845.32", change: "-34.20", changePct: "-0.17", high: "19,910.55", low: "19,780.10", open: "19,879.52" },
-        RUT: { price: "2,065.14", change: "+8.75", changePct: "+0.43", high: "2,071.40", low: "2,048.90", open: "2,056.39" },
+        SPX: { price: "5,620.85", change: "+12.40", changePct: "+0.22" },
+        NDX: { price: "19,845.32", change: "-34.20", changePct: "-0.17" },
+        RUT: { price: "2,065.14", change: "+8.75", changePct: "+0.43" },
       });
+      setMarketMeta({ bias: "CAUTIOUSLY BULLISH", volRegime: "ELEVATED — VIX WATCH" });
       setLastUpdated(new Date().toLocaleTimeString() + " (cached)");
     }
     setLoading(false);
@@ -450,6 +458,11 @@ Keep each headline under 12 words. Return ONLY the JSON array.`,
   useEffect(() => {
     fetchMarketData();
     fetchNews();
+    // Auto-refresh every 30 seconds
+    const interval = setInterval(() => {
+      fetchMarketData();
+    }, 30000);
+    return () => clearInterval(interval);
   }, []);
 
   const indexInfo = {
@@ -461,12 +474,13 @@ Keep each headline under 12 words. Return ONLY the JSON array.`,
   const isPos = (v) => parseFloat(String(v).replace(/[^0-9.-]/g, "")) >= 0;
 
   const terminalRows = indices ? [
-    { label: "SIGNAL", value: "MARKET OPEN — SCANNING", color: C.gold },
+    { label: "SIGNAL", value: "LIVE FEED ACTIVE", color: C.gold },
     { label: "SPX", value: indices.SPX?.price, color: isPos(indices.SPX?.change) ? C.green : C.red },
     { label: "NDX", value: indices.NDX?.price, color: isPos(indices.NDX?.change) ? C.green : C.red },
     { label: "RUT", value: indices.RUT?.price, color: isPos(indices.RUT?.change) ? C.green : C.red },
-    { label: "AI BIAS", value: "CAUTIOUSLY BULLISH", color: C.gold },
-    { label: "VOL REGIME", value: "ELEVATED — VIX WATCH", color: C.crimson },
+    { label: "VIX", value: vix ? vix.price : "—", color: vix && parseFloat(vix.price) > 20 ? C.red : C.gold },
+    { label: "AI BIAS", value: marketMeta?.bias || "SCANNING...", color: C.gold },
+    { label: "VOL REGIME", value: marketMeta?.volRegime || "SCANNING...", color: C.crimson },
   ] : [];
 
   return (
