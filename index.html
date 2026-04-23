@@ -458,7 +458,7 @@ Keep each headline under 12 words. Return ONLY the JSON array.`,
   useEffect(() => {
     fetchMarketData();
     fetchNews();
-    // Auto-refresh every 30 seconds
+    // Auto-refresh every 30 seconds (premium key)
     const interval = setInterval(() => {
       fetchMarketData();
     }, 30000);
