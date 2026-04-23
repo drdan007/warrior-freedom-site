@@ -395,7 +395,6 @@ function MarketsPage() {
   async function fetchMarketData() {
     setLoading(true);
     try {
-      // Fetch live data from Theta Data via Supabase Edge Function
       const res = await fetch(
         "https://rwlbiccsypoqwngwisvx.supabase.co/functions/v1/swift-function",
         {
@@ -407,22 +406,19 @@ function MarketsPage() {
         }
       );
       const data = await res.json();
-      if (data.SPX && data.NDX && data.RUT) {
+      if (data.SPY && data.QQQ && data.IWM) {
         setIndices(data);
         setVix(data.VIX);
-        setMarketMeta(data.meta);
         setLastUpdated(new Date().toLocaleTimeString() + " · LIVE");
       } else {
         throw new Error("Invalid data");
       }
     } catch (e) {
-      // Fallback to cached data if Theta Data unavailable
       setIndices({
-        SPX: { price: "5,620.85", change: "+12.40", changePct: "+0.22" },
-        NDX: { price: "19,845.32", change: "-34.20", changePct: "-0.17" },
-        RUT: { price: "2,065.14", change: "+8.75", changePct: "+0.43" },
+        SPY: { price: "560.85", change: "+5.40", changePct: "+0.97", high: "562.10", low: "558.20", open: "559.45" },
+        QQQ: { price: "455.32", change: "-2.20", changePct: "-0.48", high: "458.55", low: "453.10", open: "457.52" },
+        IWM: { price: "196.14", change: "+1.75", changePct: "+0.90", high: "197.40", low: "194.90", open: "195.39" },
       });
-      setMarketMeta({ bias: "CAUTIOUSLY BULLISH", volRegime: "ELEVATED — VIX WATCH" });
       setLastUpdated(new Date().toLocaleTimeString() + " (cached)");
     }
     setLoading(false);
@@ -458,29 +454,30 @@ Keep each headline under 12 words. Return ONLY the JSON array.`,
   useEffect(() => {
     fetchMarketData();
     fetchNews();
-    // Auto-refresh every 30 seconds (premium key)
+    // Auto-refresh every 5 minutes (AI search based)
     const interval = setInterval(() => {
       fetchMarketData();
-    }, 30000);
+    }, 300000);
     return () => clearInterval(interval);
   }, []);
 
   const indexInfo = {
-    SPX: { name: "S&P 500", desc: "Large-cap US equities benchmark" },
-    NDX: { name: "NASDAQ 100", desc: "Top 100 non-financial Nasdaq stocks" },
-    RUT: { name: "Russell 2000", desc: "Small-cap US equities index" },
+    SPY: { name: "S&P 500 ETF", desc: "SPDR S&P 500 ETF Trust" },
+    QQQ: { name: "Nasdaq 100 ETF", desc: "Invesco QQQ Trust" },
+    IWM: { name: "Russell 2000 ETF", desc: "iShares Russell 2000 ETF" },
+    VIX: { name: "Volatility Index", desc: "CBOE Volatility Index proxy" },
   };
 
   const isPos = (v) => parseFloat(String(v).replace(/[^0-9.-]/g, "")) >= 0;
 
   const terminalRows = indices ? [
     { label: "SIGNAL", value: "LIVE FEED ACTIVE", color: C.gold },
-    { label: "SPX", value: indices.SPX?.price, color: isPos(indices.SPX?.change) ? C.green : C.red },
-    { label: "NDX", value: indices.NDX?.price, color: isPos(indices.NDX?.change) ? C.green : C.red },
-    { label: "RUT", value: indices.RUT?.price, color: isPos(indices.RUT?.change) ? C.green : C.red },
-    { label: "VIX", value: vix ? vix.price : "—", color: vix && parseFloat(vix.price) > 20 ? C.red : C.gold },
-    { label: "AI BIAS", value: marketMeta?.bias || "SCANNING...", color: C.gold },
-    { label: "VOL REGIME", value: marketMeta?.volRegime || "SCANNING...", color: C.crimson },
+    { label: "SPY",    value: indices.SPY?.price,    color: isPos(indices.SPY?.change) ? C.green : C.red },
+    { label: "QQQ",    value: indices.QQQ?.price,    color: isPos(indices.QQQ?.change) ? C.green : C.red },
+    { label: "IWM",    value: indices.IWM?.price,    color: isPos(indices.IWM?.change) ? C.green : C.red },
+    { label: "SPY CHG",value: (indices.SPY?.changePct || "0") + "%", color: isPos(indices.SPY?.change) ? C.green : C.red },
+    { label: "QQQ CHG",value: (indices.QQQ?.changePct || "0") + "%", color: isPos(indices.QQQ?.change) ? C.green : C.red },
+    { label: "VIX",    value: vix ? vix.price : "—", color: vix && parseFloat((vix.price||"0").replace(/,/g,"")) > 20 ? C.red : C.gold },
   ] : [];
 
   return (
