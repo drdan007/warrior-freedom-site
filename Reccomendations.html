@@ -1,0 +1,474 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Recommendations — Warrior Freedom AI</title>
+<meta name="description" content="Daily put credit spread recommendations for SPX and RUT, refreshed every morning at 11:30 AM ET." />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,500;9..144,700;9..144,900&family=JetBrains+Mono:wght@400;500;700&family=Geist:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg:        #0d1117;
+    --bg-card:   #131a24;
+    --bg-paper:  #f4ead5;
+    --ink:       #ede4c8;
+    --ink-dim:   #a8a191;
+    --ink-mute:  #6b6657;
+    --rule:      #2a2f3a;
+    --tactical:  #d4633a;
+    --gold:      #c9a961;
+    --green:     #7fb069;
+    --red:       #c9534a;
+    --slate:     #1a2332;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: 'Geist', -apple-system, sans-serif;
+    font-weight: 400;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+  body {
+    background-image:
+      radial-gradient(ellipse 80% 50% at 50% 0%, rgba(212,99,58,0.06) 0%, transparent 60%),
+      linear-gradient(180deg, #0d1117 0%, #0a0e15 100%);
+    min-height: 100vh;
+  }
+
+  /* ─── Top bar ─── */
+  .topbar {
+    border-bottom: 1px solid var(--rule);
+    padding: 14px 32px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink-mute);
+  }
+  .topbar .brand {
+    color: var(--ink);
+    font-weight: 700;
+  }
+  .topbar .brand::before {
+    content: '★ ';
+    color: var(--tactical);
+  }
+
+  /* ─── Hero ─── */
+  .hero {
+    padding: 80px 32px 40px;
+    max-width: 1280px;
+    margin: 0 auto;
+    border-bottom: 1px solid var(--rule);
+  }
+  .hero .eyebrow {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--tactical);
+    margin-bottom: 18px;
+  }
+  .hero h1 {
+    font-family: 'Fraunces', serif;
+    font-weight: 500;
+    font-size: clamp(38px, 6vw, 72px);
+    line-height: 1.02;
+    letter-spacing: -0.02em;
+    color: var(--ink);
+    font-variation-settings: "opsz" 144;
+    margin-bottom: 16px;
+  }
+  .hero h1 em {
+    font-style: italic;
+    color: var(--gold);
+    font-weight: 300;
+  }
+  .hero .lede {
+    max-width: 640px;
+    color: var(--ink-dim);
+    font-size: 17px;
+    line-height: 1.55;
+  }
+
+  .hero-meta {
+    display: flex;
+    gap: 48px;
+    margin-top: 36px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+  }
+  .hero-meta .label {
+    color: var(--ink-mute);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 6px;
+  }
+  .hero-meta .value {
+    color: var(--ink);
+    font-size: 15px;
+    font-weight: 500;
+  }
+
+  /* ─── Main ─── */
+  main {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 56px 32px 80px;
+  }
+  .section-head {
+    display: flex;
+    align-items: baseline;
+    gap: 16px;
+    margin-bottom: 20px;
+  }
+  .section-head h2 {
+    font-family: 'Fraunces', serif;
+    font-weight: 500;
+    font-size: 28px;
+    letter-spacing: -0.01em;
+  }
+  .section-head .count {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    color: var(--ink-mute);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  /* ─── Table ─── */
+  .table-wrap {
+    background: var(--bg-card);
+    border: 1px solid var(--rule);
+    border-radius: 4px;
+    overflow-x: auto;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+  }
+  thead th {
+    text-align: left;
+    padding: 16px 14px;
+    font-size: 10.5px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink-mute);
+    border-bottom: 1px solid var(--rule);
+    background: rgba(255,255,255,0.015);
+    white-space: nowrap;
+  }
+  thead th.num { text-align: right; }
+  tbody td {
+    padding: 16px 14px;
+    border-bottom: 1px solid var(--rule);
+    color: var(--ink);
+    white-space: nowrap;
+  }
+  tbody td.num { text-align: right; font-variant-numeric: tabular-nums; }
+  tbody tr:last-child td { border-bottom: none; }
+  tbody tr:hover { background: rgba(255,255,255,0.02); }
+  td.symbol  { color: var(--gold); font-weight: 700; letter-spacing: 0.05em; }
+  td.dte     { color: var(--ink); font-weight: 500; }
+  td.expiry  { color: var(--ink-dim); }
+  td.credit  { color: var(--green); font-weight: 700; }
+  td.target  { color: var(--gold); }
+  td.stoploss{ color: var(--red); }
+  td.qc-pass { color: var(--green); }
+  td.qc-warn { color: var(--tactical); }
+  td.error   { color: var(--ink-mute); font-style: italic; font-family: 'Geist'; font-size: 12px; }
+
+  /* ─── Spread label cell ─── */
+  .spread-cell {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  .spread-cell .strikes {
+    font-weight: 700;
+    color: var(--ink);
+  }
+  .spread-cell .width-tag {
+    font-size: 10px;
+    color: var(--ink-mute);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  /* ─── Rule strip ─── */
+  .rules {
+    margin-top: 56px;
+    background: var(--bg-card);
+    border: 1px solid var(--rule);
+    border-left: 3px solid var(--tactical);
+    padding: 28px 32px;
+    border-radius: 0 4px 4px 0;
+  }
+  .rules h3 {
+    font-family: 'Fraunces', serif;
+    font-weight: 500;
+    font-size: 18px;
+    margin-bottom: 18px;
+    color: var(--ink);
+  }
+  .rules-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 24px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+  }
+  .rules-grid .label {
+    color: var(--ink-mute);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    font-size: 10px;
+    margin-bottom: 4px;
+  }
+  .rules-grid .value {
+    color: var(--ink);
+    font-size: 14px;
+  }
+
+  /* ─── Footer / disclaimer ─── */
+  footer {
+    margin-top: 80px;
+    padding: 40px 32px;
+    border-top: 1px solid var(--rule);
+    color: var(--ink-mute);
+    font-size: 12px;
+    line-height: 1.7;
+    max-width: 1280px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  footer .disclaimer {
+    max-width: 760px;
+    font-style: italic;
+  }
+  footer .colophon {
+    margin-top: 24px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10.5px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-mute);
+  }
+
+  /* ─── Loading + error states ─── */
+  .state {
+    padding: 60px 24px;
+    text-align: center;
+    color: var(--ink-mute);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+  }
+  .state.error { color: var(--red); }
+
+  .pulse {
+    display: inline-block;
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--green);
+    margin-right: 8px;
+    animation: pulse 2s ease-in-out infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+  }
+
+  @media (max-width: 720px) {
+    .topbar { padding: 12px 18px; flex-direction: column; gap: 6px; align-items: flex-start; }
+    .hero { padding: 48px 18px 32px; }
+    main { padding: 36px 18px 56px; }
+    .hero-meta { gap: 24px; flex-wrap: wrap; }
+    table { font-size: 11.5px; }
+    thead th, tbody td { padding: 12px 10px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="brand">Warrior Freedom AI</div>
+  <div id="status-line"><span class="pulse"></span>Loading…</div>
+</div>
+
+<section class="hero">
+  <div class="eyebrow">Live Recommendations</div>
+  <h1>Put credit spreads, <em>distilled.</em></h1>
+  <p class="lede">
+    SPX and RUT 25-point put credit spreads at 7, 14, 28, and 45 days to expiry —
+    filtered for short-strike delta ≤ 0.10, VIX-adjusted distance from spot, and
+    minimum 4% yield on risk. Refreshed daily at 11:30 AM ET.
+  </p>
+  <div class="hero-meta">
+    <div>
+      <div class="label">Last Updated</div>
+      <div class="value" id="meta-updated">—</div>
+    </div>
+    <div>
+      <div class="label">Spot · SPX</div>
+      <div class="value" id="meta-spx">—</div>
+    </div>
+    <div>
+      <div class="label">Spot · RUT</div>
+      <div class="value" id="meta-rut">—</div>
+    </div>
+    <div>
+      <div class="label">VIX / Buffer</div>
+      <div class="value" id="meta-vix">—</div>
+    </div>
+  </div>
+</section>
+
+<main>
+  <div class="section-head">
+    <h2>This Week's Recommendations</h2>
+    <span class="count" id="count-line"></span>
+  </div>
+
+  <div class="table-wrap">
+    <table id="recs-table">
+      <thead>
+        <tr>
+          <th>Symbol</th>
+          <th>DTE</th>
+          <th>Expiry</th>
+          <th>Spread</th>
+          <th class="num">Δ Short</th>
+          <th class="num">Credit</th>
+          <th class="num">Max Loss</th>
+          <th class="num">YoR</th>
+          <th class="num">Profit Tgt 50–70%</th>
+          <th class="num">Stop Loss Debit</th>
+          <th>QC</th>
+        </tr>
+      </thead>
+      <tbody id="recs-body">
+        <tr><td colspan="11" class="state"><span class="pulse"></span>Fetching latest data…</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="rules">
+    <h3>Trade rules in force</h3>
+    <div class="rules-grid">
+      <div><div class="label">Spread Width</div><div class="value">25 points</div></div>
+      <div><div class="label">Short Strike Δ</div><div class="value">≤ 0.10</div></div>
+      <div><div class="label">Min Yield on Risk</div><div class="value">4.0%</div></div>
+      <div><div class="label">VIX Buffer</div><div class="value" id="rule-vix">15% / 20%</div></div>
+      <div><div class="label">Profit Target</div><div class="value">50–70% of credit</div></div>
+      <div><div class="label">Stop Loss</div><div class="value">2× credit (-200%)</div></div>
+    </div>
+  </div>
+</main>
+
+<footer>
+  <div class="disclaimer">
+    Educational content, not investment advice. Options trading involves substantial
+    risk of loss and is not suitable for all investors. Past performance does not
+    guarantee future results. Verify all quotes and Greeks against your broker
+    before placing any trade.
+  </div>
+  <div class="colophon">
+    <span id="colophon-status">Refreshed daily at 11:30 AM ET · Powered by Alpha Vantage</span>
+  </div>
+</footer>
+
+<script>
+(async function () {
+  const $ = id => document.getElementById(id);
+  const fmtNum = (n, d=2) => (typeof n === 'number' && !isNaN(n)) ? n.toFixed(d) : '—';
+  const fmtInt = n => (typeof n === 'number' && !isNaN(n)) ? Math.round(n).toLocaleString() : '—';
+
+  try {
+    const r = await fetch('/api/recommendations', { cache: 'default' });
+    if (!r.ok) throw new Error(`API returned ${r.status}`);
+    const data = await r.json();
+
+    const updated = new Date(data.generatedAt);
+    const updatedStr = updated.toLocaleString('en-US', {
+      timeZone: 'America/New_York',
+      weekday: 'short', month: 'short', day: 'numeric',
+      hour: 'numeric', minute: '2-digit', timeZoneName: 'short'
+    });
+    $('meta-updated').textContent = updatedStr;
+    $('status-line').innerHTML = `<span class="pulse"></span>Live · refreshed ${updatedStr}`;
+
+    const meta = data.meta || {};
+    if (meta.symbols?.SPX?.spot) $('meta-spx').textContent = fmtInt(meta.symbols.SPX.spot);
+    if (meta.symbols?.RUT?.spot) $('meta-rut').textContent = fmtInt(meta.symbols.RUT.spot);
+    if (meta.vix != null) $('meta-vix').textContent = `${fmtNum(meta.vix, 2)} · ${meta.vixBufferPct}%`;
+    $('rule-vix').textContent = `${meta.vixBufferPct || 15}% (active)`;
+
+    const body = $('recs-body');
+    body.innerHTML = '';
+
+    const recs = data.recommendations || [];
+    const okCount = recs.filter(r => !r.error).length;
+    $('count-line').textContent = `${okCount} of ${recs.length} qualifying`;
+
+    for (const r of recs) {
+      const tr = document.createElement('tr');
+      if (r.error) {
+        tr.innerHTML = `
+          <td class="symbol">${r.symbol}</td>
+          <td class="dte">${r.targetDTE}</td>
+          <td colspan="9" class="error">No qualifying spread — ${r.error}</td>
+        `;
+      } else {
+        const qcCell = r.qc?.pass
+          ? `<td class="qc-pass">✓ pass</td>`
+          : `<td class="qc-warn">⚠ ${(r.qc?.drift*100).toFixed(0)}% drift</td>`;
+        tr.innerHTML = `
+          <td class="symbol">${r.symbol}</td>
+          <td class="dte">${r.dte}d</td>
+          <td class="expiry">${r.expiry}</td>
+          <td>
+            <div class="spread-cell">
+              <div class="strikes">${fmtInt(r.shortStrike)} / ${fmtInt(r.longStrike)}</div>
+              <div class="width-tag">25-pt put credit</div>
+            </div>
+          </td>
+          <td class="num">${fmtNum(r.shortDelta, 3)}</td>
+          <td class="num credit">$${fmtNum(r.credit)}</td>
+          <td class="num">$${fmtNum(r.maxLoss)}</td>
+          <td class="num">${fmtNum(r.yor*100, 1)}%</td>
+          <td class="num target">$${fmtNum(r.profitTgtLow)} – $${fmtNum(r.profitTgtHigh)}</td>
+          <td class="num stoploss">$${fmtNum(r.stopLossDebit)}</td>
+          ${qcCell}
+        `;
+      }
+      body.appendChild(tr);
+    }
+
+    if (data.nextRefreshInSeconds) {
+      const hrs = Math.round(data.nextRefreshInSeconds / 3600);
+      $('colophon-status').textContent =
+        `Next refresh in ~${hrs} hour${hrs===1?'':'s'} · Powered by Alpha Vantage`;
+    }
+
+  } catch (err) {
+    $('recs-body').innerHTML = `
+      <tr><td colspan="11" class="state error">
+        Failed to load recommendations: ${err.message}
+      </td></tr>`;
+    $('status-line').innerHTML = `<span class="pulse" style="background:var(--red)"></span>Error`;
+  }
+})();
+</script>
+
+</body>
+</html>
